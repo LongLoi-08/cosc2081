@@ -8,6 +8,8 @@ public enum ContainerType {
     LIQUID      ("LIQUID"       , 4.8, 5.3);
 
     private final String type;
+
+    // both are in [gallons / Km] unit
     private final double fuelConsumptionShip;
     private final double fuelConsumptionTruck;
 
