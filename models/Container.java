@@ -14,6 +14,12 @@ public class Container implements interfaces.Container {
 
     public Container() {}
 
+    public Container(String id, ContainerType containerType, double weight) {
+        this.id = id;
+        this.containerType = containerType;
+        this.weight = weight;
+    }
+
     protected Container(ContainerType containerType, double weight) {
         this.id = generateId();
         this.containerType = containerType;
