@@ -18,6 +18,10 @@ public class Container implements interfaces.Container {
         this.id = id;
         this.containerType = containerType;
         this.weight = weight;
+        // check for id that are inuse when read from file
+        if (Integer.parseInt(id.substring(1)) >= idCounter) {
+            idCounter = Integer.parseInt(id.substring(1)) + 1;
+        }
     }
 
     protected Container(ContainerType containerType, double weight) {
