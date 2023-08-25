@@ -1,2 +1,26 @@
-package interfaces;public interface Vehicle {
+package interfaces;
+
+import models.Container;
+import utils.VehicleType;
+
+import java.util.ArrayList;
+
+public interface Vehicle {
+    public String getId();
+
+    public String getName();
+
+    public VehicleType getVehicleType();
+
+    public double getCurrentFuel();
+
+    public double getFuelCapacity();
+
+    public double getCarryingCapacity();
+
+    public double getCurrentCarryingCapacity();
+
+    public ArrayList<Container> getLoadedContainers();
+
+    public models.Vehicle loadContainer(Container container);
 }

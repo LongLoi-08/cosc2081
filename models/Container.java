@@ -3,6 +3,8 @@ package models;
 import utils.ContainerType;
 import utils.VehicleType;
 
+import java.util.ArrayList;
+
 public class Container implements interfaces.Container {
     private static int idCounter = 0;
 
@@ -24,6 +26,10 @@ public class Container implements interfaces.Container {
         String newId = String.format(idFormat, idCounter);
         idCounter++;
         return newId;
+    }
+
+    public ArrayList<VehicleType> getUsableVehicle() {
+        return this.containerType.getUsableVehicle();
     }
 
     @Override
