@@ -18,7 +18,7 @@ public interface Vehicle {
 
     public double getCarryingCapacity();
 
-    public double getCurrentCarryingCapacity();
+    public double getCurrentCarryingLoad();
 
     public ArrayList<Container> getLoadedContainers();
 
