@@ -17,6 +17,10 @@ public class Container implements interfaces.Container {
 
     public Container() {}
 
+    /**
+     * For dev purpose only!
+     * Use when importing mock data
+     */
     public Container(String id, ContainerType containerType, double weight) {
         this.id = id;
         this.containerType = containerType;
@@ -37,6 +41,9 @@ public class Container implements interfaces.Container {
         containers.add(this);
     }
 
+    public static ArrayList<Container> getAllContainer() {
+        return containers;
+    }
 
     // custom id generator
     private String generateId() {
@@ -45,10 +52,6 @@ public class Container implements interfaces.Container {
         String newId = String.format(idFormat, idIndexValue + 1);
         idCache.set(idIndexValue, true);
         return newId;
-    }
-
-    public static ArrayList<Container> getAllContainer() {
-        return containers;
     }
 
     public ArrayList<VehicleType> getUsableVehicle() {
