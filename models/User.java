@@ -53,7 +53,7 @@ class PortManager extends User {
 
     public void viewPortInformation() {
         System.out.println("Port Name: " + assignedPort.getName());
-        System.out.println("Port ID: " + assignedPort.getPortId());
+        System.out.println("Port ID: " + assignedPort.getId());
     }
 }
 
