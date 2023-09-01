@@ -124,6 +124,10 @@ public class Vehicle implements interfaces.Vehicle {
         return containers;
     }
 
+    public Port getCurrentPort() {
+        return currentPort;
+    }
+
     @Override
     public Vehicle loadContainer(Container container) {
         // weight capacity validation here
