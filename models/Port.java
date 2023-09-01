@@ -59,6 +59,10 @@ public class Port {
         ports.add(this);
     }
 
+    public ArrayList<Port> getAllPorts() {
+        return ports;
+    }
+
     private String generateId() {
         String idFormat = "p%04d";
         int idIndexValue = idCache.indexOf(false);
