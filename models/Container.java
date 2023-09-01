@@ -80,6 +80,6 @@ public class Container implements interfaces.Container {
 
     @Override
     public String toString() {
-        return String.format("%s,%s,%.2f", id, containerType.toString(), weight);
+        return String.format("%s|%s|%.2f", id, containerType.toString(), weight);
     }
 }
