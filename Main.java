@@ -1,7 +1,10 @@
 import models.Container;
+import models.PortManagementSystem;
+import utils.ContainerType;
+import utils.VehicleType;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void showCredits() {
         System.out.println("""
                 COSC2081 GROUP ASSIGNMENT
                 CONTAINER PORT MANAGEMENT SYSTEM
@@ -11,7 +14,17 @@ public class Main {
                 sXXXXXXX, Student Name
                 sXXXXXXX, Student Name
                 sXXXXXXX, Student Name
-                \n\n
+                sXXXXXXX, Student Name
                 """);
+    }
+    public static void sysInit() {
+        showCredits();
+
+        // main system implementation should be here
+
+    }
+    public static void main(String[] args) {
+//        sysInit();
+        PortManagementSystem.demo();
     }
 }

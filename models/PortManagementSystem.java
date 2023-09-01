@@ -2,9 +2,16 @@ package models;
 import java.util.Scanner;
 
 public class PortManagementSystem {
-    public static void main(String[] args) {
+    public static void demo() {
         Scanner scanner = new Scanner(System.in);
-        Port assignedPort = new Port("P001", "Sample Port");
+//        Port assignedPort = new Port("P001", "Sample Port");
+        Port assignedPort = new Port(
+                "Sample Port",
+                0,
+                0,
+                100,
+                true
+        );
         PortManager portManager = new PortManager(assignedPort);
 
         while (true) {
