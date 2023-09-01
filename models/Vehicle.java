@@ -35,7 +35,7 @@ public class Vehicle implements interfaces.Vehicle {
         this.containers = containers;
         this.currentPort = currentPort;
 
-        int idValue = Integer.parseInt(id.substring(1));
+        int idValue = Integer.parseInt(id.substring(2));
         if (vehicleType == VehicleType.SHIP) {
             idCacheS.set(idValue, true);
         } else {
