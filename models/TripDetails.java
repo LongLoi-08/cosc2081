@@ -92,4 +92,16 @@ public class TripDetails {
     public String getStatus() {
         return status;
     }
+
+    public String toStringSaveFileFormat() {
+        return String.format(
+                "%s|%s|%s|%s|%s|%s|%s|",
+                id, departure.toString(), arrival.toString(), vehicle.getId(), departurePort.getId(), arrivalPort.getId(), status
+        );
+    }
+
+    @Override
+    public String toString() {
+        return id;
+    }
 }

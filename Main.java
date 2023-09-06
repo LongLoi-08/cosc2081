@@ -1,7 +1,4 @@
-import models.Container;
 import models.PortManagementSystem;
-import utils.ContainerType;
-import utils.VehicleType;
 
 public class Main {
     public static void showCredits() {
