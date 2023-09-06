@@ -107,11 +107,15 @@ public class Port {
         return pastTraffics;
     }
 
-    @Override
-    public String toString() {
+    public String toStringSaveFileFormat() {
         return String.format(
                 "%s|%s|%.2f|%.2f|%.2f|%d|%s|%s|%s|%s",
                 id, name, xLatitude, yLongitude, maxCapacity, isLanding ? 1 : 0, vehicles, containers, ongoingTraffics, pastTraffics
         );
+    }
+
+    @Override
+    public String toString() {
+        return id;
     }
 }

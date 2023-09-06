@@ -78,8 +78,12 @@ public class Container implements interfaces.Container {
         return containerType.getFuelConsumptionShip() * vehicleType.compareTo(VehicleType.SHIP) + containerType.getFuelConsumptionTruck() * vehicleType.compareTo(VehicleType.TRUCK);
     }
 
+    public String toStringSaveFileFormat() {
+        return String.format("%s|%s|%.2f", id, containerType.toString(), weight);
+    }
+
     @Override
     public String toString() {
-        return String.format("%s|%s|%.2f", id, containerType.toString(), weight);
+        return id;
     }
 }

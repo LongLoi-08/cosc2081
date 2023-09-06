@@ -1,7 +1,7 @@
-import models.Container;
+import models.Port;
 import models.PortManagementSystem;
+import models.Container;
 import utils.ContainerType;
-import utils.VehicleType;
 
 public class Main {
     public static void showCredits() {
@@ -10,7 +10,7 @@ public class Main {
                 CONTAINER PORT MANAGEMENT SYSTEM
                 Instructor: Mr. Minh Vu & Dr. Phong Ngo
                 Group: 25
-                s3758273, Loi Gia Long
+                s3758273, Loi Gia Long1
                 sXXXXXXX, Student Name
                 sXXXXXXX, Student Name
                 sXXXXXXX, Student Name

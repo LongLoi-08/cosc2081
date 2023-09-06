@@ -140,11 +140,15 @@ public class Vehicle implements interfaces.Vehicle {
         return this;
     }
 
-    @Override
-    public String toString() {
+    public String toStringSaveFileFormat() {
         return String.format(
                 "%s|%s|%.2f|%.2f|%.2f|%.2f|%s|%s",
                 id, vehicleType.toString(), maxFuel, currentFuel, maxCarryCapacity, currentCarryLoad, containers, currentPort.getId()
         );
+    }
+
+    @Override
+    public String toString() {
+        return id;
     }
 }
