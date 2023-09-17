@@ -22,5 +22,5 @@ public interface Vehicle {
 
     public ArrayList<Container> getLoadedContainers();
 
-    public models.Vehicle loadContainer(Container container);
+    public boolean loadContainer(Container container);
 }
