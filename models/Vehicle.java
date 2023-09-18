@@ -58,7 +58,7 @@ public class Vehicle implements interfaces.Vehicle {
         vehicles.add(this);
     }
 
-    public static ArrayList<Vehicle> getAllVehicles() {
+    public ArrayList<Vehicle> getAllVehicles() {
         return vehicles;
     }
 
