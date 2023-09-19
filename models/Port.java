@@ -130,17 +130,27 @@ public class Port {
         return pastTraffics;
     }
 
-    public Container findContainerById(String id) {
+    public Container findContainerInPortById(String id) {
         for (Container container : this.containers) {
-            if (Objects.equals(container.getId(), id)) return container;
+            if (id.equals(container.getId())) return container;
         }
+
         return null;
     }
 
-    public Vehicle findVehicleById(String id) {
+    public Vehicle findVehicleInPortById(String id) {
         for (Vehicle vehicle : this.vehicles) {
-            if (Objects.equals(vehicle.getId(), id)) return vehicle;
+            if (id.equals(vehicle.getId())) return vehicle;
         }
+
+        return null;
+    }
+
+    public Port findPortById(String id) {
+        for (Port port : ports) {
+            if (id.equals(port.getId())) return port;
+        }
+
         return null;
     }
 
