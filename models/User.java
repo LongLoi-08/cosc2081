@@ -81,6 +81,22 @@ public class User {
         return managerPort;
     }
 
+    protected void setUsername(String username) {
+        this.username = username;
+    }
+
+    protected void setPassword(String password) {
+        this.password = password;
+    }
+
+    protected void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
+
+    protected void setManagerPort(Port managerPort) {
+        this.managerPort = managerPort;
+    }
+
     public User authenticate(/*String username, String password*/) {
         for (User user : users) {
             if (Objects.equals(user.getUsername(), this.username) && Objects.equals(user.getPassword(), this.password)) {
@@ -90,35 +106,10 @@ public class User {
         return null;
     }
 
-//    public String showAdminMenu() {
-//        Scanner inputScanner = new Scanner(System.in);
-//
-//        CustomUtils.breakLn(5);
-//        System.out.println(adminMenus.get(0));
-//
-//        return inputScanner.nextLine();
-//    }
-//
-//    public String showManagerMenu() {
-//        Scanner inputScanner = new Scanner(System.in);
-//
-//        CustomUtils.breakLn(5);
-//        System.out.println("""
-//                Admin Menu:
-//                [1] - View Port information
-//                [2] - List all Port's Containers
-//                [3] - List all Port's Vehicles
-//                [4] - View Statistics
-//                """);
-//        System.out.println("[0] - Exit/Logout");
-//
-//
-//        return inputScanner.nextLine();
-//    }
-//
-//    public String showMenu() {
-//        if (this.isAdmin) return showAdminMenu();
-//        return showManagerMenu();
-//    }
+    public String toStringSaveFileFormat() {
+        return String.format(
+                "%s|%s|%d|%s",
+                username, password, isAdmin ? 1 : 0, managerPort
+        );
+    }
 }
-
