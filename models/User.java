@@ -49,13 +49,13 @@ public class User {
         this.password = password;
     }
 
-    public User setAsManager(Port port) {
+    protected User setAsManager(Port port) {
         this.managerPort = port;
         users.add(this);
         return this;
     }
 
-    public User setAsAdmin() {
+    protected User setAsAdmin() {
         this.isAdmin = true;
         users.add(this);
         return this;
