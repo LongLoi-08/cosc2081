@@ -5,6 +5,7 @@ import utils.VehicleType;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 
 public class Container implements interfaces.Container {
     private static ArrayList<Boolean> idCache = new ArrayList<>(Collections.nCopies(1000, false));
@@ -76,6 +77,22 @@ public class Container implements interfaces.Container {
     @Override   // Currently not working, will solve later in the future
     public double getFuelConsumption(VehicleType vehicleType) {
         return containerType.getFuelConsumptionShip() * vehicleType.compareTo(VehicleType.SHIP) + containerType.getFuelConsumptionTruck() * vehicleType.compareTo(VehicleType.TRUCK);
+    }
+
+    protected void setContainerType(ContainerType containerType) {
+        this.containerType = containerType;
+    }
+
+    protected void setWeight(double weight) {
+        this.weight = weight;
+    }
+
+    public Container findContainerById(String id) {
+        for (Container container : containers) {
+            if (id.equals(container.getId())) return container;
+        }
+
+        return null;
     }
 
     public String toStringSaveFileFormat() {

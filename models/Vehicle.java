@@ -128,6 +128,42 @@ public class Vehicle implements interfaces.Vehicle {
         return currentPort;
     }
 
+    protected void setVehicleType(VehicleType vehicleType) {
+        this.vehicleType = vehicleType;
+    }
+
+    protected void setMaxFuel(double maxFuel) {
+        this.maxFuel = maxFuel;
+    }
+
+    protected void setCurrentFuel(double currentFuel) {
+        this.currentFuel = currentFuel;
+    }
+
+    protected void setMaxCarryCapacity(double maxCarryCapacity) {
+        this.maxCarryCapacity = maxCarryCapacity;
+    }
+
+    protected void setCurrentCarryLoad(double currentCarryLoad) {
+        this.currentCarryLoad = currentCarryLoad;
+    }
+
+    protected void setContainers(ArrayList<Container> containers) {
+        this.containers = containers;
+    }
+
+    protected void setCurrentPort(Port currentPort) {
+        this.currentPort = currentPort;
+    }
+
+    public Vehicle findVehicleById(String id) {
+        for (Vehicle vehicle : vehicles) {
+            if (id.equals(vehicle.getId())) return vehicle;
+        }
+
+        return null;
+    }
+
     @Override
     public boolean loadContainer(Container container) {
         // weight capacity validation here
