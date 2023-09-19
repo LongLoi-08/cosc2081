@@ -58,7 +58,7 @@ public class Vehicle implements interfaces.Vehicle {
         vehicles.add(this);
     }
 
-    public static ArrayList<Vehicle> getAllVehicles() {
+    public ArrayList<Vehicle> getAllVehicles() {
         return vehicles;
     }
 
@@ -129,15 +129,11 @@ public class Vehicle implements interfaces.Vehicle {
     }
 
     @Override
-    public Vehicle loadContainer(Container container) {
+    public boolean loadContainer(Container container) {
         // weight capacity validation here
-        if (isLoadable(container)) {
-            containers.add(container);
-            System.out.println("Load successful!");
-            return this;
-        }
-        System.out.println("Over carrying capacity alert!");
-        return this;
+        if (!isLoadable(container)) return false;
+        containers.add(container);
+        return true;
     }
 
     public String toStringSaveFileFormat() {

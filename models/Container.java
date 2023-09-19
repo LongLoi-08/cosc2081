@@ -41,7 +41,7 @@ public class Container implements interfaces.Container {
         containers.add(this);
     }
 
-    public static ArrayList<Container> getAllContainer() {
+    public ArrayList<Container> getAllContainer() {
         return containers;
     }
 
