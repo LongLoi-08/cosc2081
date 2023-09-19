@@ -102,7 +102,7 @@ public class PortManagementSystem {
                 [0] - Exit/Logout""");
     }
 
-    private static void displayMenuLayer1(User user, String string) {
+    private static void displayResponseLayer0(User user, String string) {
         CustomUtils.breakLn(5);
         switch (string) {
             case "1" -> displayPort(user);
@@ -112,6 +112,24 @@ public class PortManagementSystem {
             default -> System.out.println("Error! Undefined option.");
         }
     }
+
+//    private static void displayMenuLayer2(User user, String string) {
+//        switch (string) {
+//            case "1" -> {
+//                if (user.isAdmin()) {
+//
+//                }
+//            }
+//
+//            case "2" -> {
+//
+//            }
+//
+//            case "3" -> {
+//
+//            }
+//        }
+//    }
 
     public static void demo() {
         Port assignedPort = new Port(
@@ -153,11 +171,10 @@ public class PortManagementSystem {
                         break;
                     }
 
-                    displayMenuLayer1(user, inputString);
+                    displayResponseLayer0(user, inputString);
                     CustomUtils.pressEnterToContinue();
                 }
             }
         } while (true);
     }
 }
-
