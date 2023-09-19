@@ -1,13 +1,14 @@
 package models;
 import utils.ContainerType;
 
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
 
 public class PortManagementSystem {
-    public static void demo() {
+    public static void demo() throws IOException {
         Scanner scanner = new Scanner(System.in);
 //        Port assignedPort = new Port("P001", "Sample Port");
         ArrayList<Port> Ports = new ArrayList<>();
@@ -68,6 +69,8 @@ public class PortManagementSystem {
                                 System.out.println("isLanding: ");
                                 Boolean isLanding = scanner.nextBoolean();
                                 Port P1 = new Port(portName,latitude, longitude, maxCapacity, isLanding);
+
+                                FileIO.write("Ports", "Ports List", String.valueOf(P1));
 //                                Ports.add(P1);
 //                                for (int i = 1; i <= Ports.size(); i++ ) {
 //                                    System.out.println("Port name: "+ Ports.get(i).getName());

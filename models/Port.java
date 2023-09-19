@@ -116,6 +116,13 @@ public class Port {
 
     @Override
     public String toString() {
-        return id;
+        return
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", xLatitude=" + xLatitude +
+                ", yLongitude=" + yLongitude +
+                ", maxCapacity=" + maxCapacity +
+                ", isLanding=" + isLanding
+                ;
     }
 }

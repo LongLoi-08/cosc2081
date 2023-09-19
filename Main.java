@@ -3,6 +3,8 @@ import models.PortManagementSystem;
 import models.Container;
 import utils.ContainerType;
 
+import java.io.IOException;
+
 public class Main {
     public static void showCredits() {
         System.out.println("""
@@ -23,7 +25,7 @@ public class Main {
         // main system implementation should be here
 
     }
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 //        sysInit();
         PortManagementSystem.demo();
     }
