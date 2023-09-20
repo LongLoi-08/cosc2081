@@ -58,7 +58,7 @@ public class Vehicle implements interfaces.Vehicle {
         vehicles.add(this);
     }
 
-    public static ArrayList<Vehicle> getAllVehicles() {
+    public ArrayList<Vehicle> getAllVehicles() {
         return vehicles;
     }
 
@@ -128,16 +128,48 @@ public class Vehicle implements interfaces.Vehicle {
         return currentPort;
     }
 
-    @Override
-    public Vehicle loadContainer(Container container) {
-        // weight capacity validation here
-        if (isLoadable(container)) {
-            containers.add(container);
-            System.out.println("Load successful!");
-            return this;
+    protected void setVehicleType(VehicleType vehicleType) {
+        this.vehicleType = vehicleType;
+    }
+
+    protected void setMaxFuel(double maxFuel) {
+        this.maxFuel = maxFuel;
+    }
+
+    protected void setCurrentFuel(double currentFuel) {
+        this.currentFuel = currentFuel;
+    }
+
+    protected void setMaxCarryCapacity(double maxCarryCapacity) {
+        this.maxCarryCapacity = maxCarryCapacity;
+    }
+
+    protected void setCurrentCarryLoad(double currentCarryLoad) {
+        this.currentCarryLoad = currentCarryLoad;
+    }
+
+    protected void setContainers(ArrayList<Container> containers) {
+        this.containers = containers;
+    }
+
+    protected void setCurrentPort(Port currentPort) {
+        this.currentPort = currentPort;
+    }
+
+    public Vehicle findVehicleById(String id) {
+        for (Vehicle vehicle : vehicles) {
+            if (id.equals(vehicle.getId())) return vehicle;
         }
-        System.out.println("Over carrying capacity alert!");
-        return this;
+
+        return null;
+    }
+
+    @Override
+    public boolean loadContainer(Container container) {
+        // weight capacity validation here
+        if (!isLoadable(container)) return false;
+        containers.add(container);
+        return true;
     }
 
     public String toStringSaveFileFormat() {
