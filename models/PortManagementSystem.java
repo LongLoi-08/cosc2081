@@ -3,6 +3,7 @@ import utils.ContainerType;
 import utils.CustomUtils;
 import utils.VehicleType;
 
+import java.nio.DoubleBuffer;
 import java.util.Scanner;
 
 public class PortManagementSystem {
@@ -137,25 +138,34 @@ public class PortManagementSystem {
         String name = scanner.nextLine();
         System.out.println("Enter latitude: ");
         String latitude = scanner.nextLine();
+        Double Latitude = 0.0;
+        if (CustomUtils.isDouble(latitude)){
+            Latitude = Double.valueOf(latitude);
+        }else{
+            System.out.println("Invalid input");
+        }
         System.out.println("Enter longitude: ");
         String longitude = scanner.nextLine();
+        Double Longitude = 0.0;
+        if (CustomUtils.isDouble(longitude)){
+            Longitude = Double.valueOf(longitude);
+        }else{
+            System.out.println("Invalid input");
+        }
         System.out.println("Enter max capacity: ");
         String maxCap = scanner.nextLine();
+        Double MaxCap = 0.0;
+        if (CustomUtils.isDouble(maxCap)){
+            MaxCap = Double.valueOf(maxCap);
+        }else{
+            System.out.println("Invalid input");
+        }
         System.out.println("Enter is landing: ");
         String isLanding = scanner.nextLine();
-        Double Longitude = 0.0;
-        Double Latitude = 0.0;
-        Double MaxCap = 0.0;
         Boolean IsLanding = false;
-        if (CustomUtils.isDouble(longitude)) {
-            Longitude = Double.valueOf(longitude);
-        } else if (CustomUtils.isDouble(latitude)) {
-            Latitude = Double.valueOf(latitude);
-        } else if (CustomUtils.isDouble(maxCap)) {
-            MaxCap = Double.valueOf(maxCap);
-        } else if (CustomUtils.isBoolean(isLanding)) {
+        if (CustomUtils.isBoolean(isLanding)) {
             IsLanding = Boolean.parseBoolean(isLanding);
-        } else {
+        }else{
             System.out.println("Invalid input");
         }
         Port newPort = new Port(name, Longitude, Latitude, MaxCap, IsLanding);
@@ -197,7 +207,7 @@ public class PortManagementSystem {
         System.out.println("[3] - Refridgerated Truck");
         System.out.println("[4] - Tanker Truck");
         System.out.println("Enter vehicle choice: ");
-        String input = scanner.next();
+        String input = scanner.nextLine();
         VehicleType type = VehicleType.TRUCK;
         switch (input){
             case "1" -> type = VehicleType.SHIP;
@@ -210,14 +220,18 @@ public class PortManagementSystem {
         String maxFuel = scanner.next();
         Double MaxFuel = null;
         Double MaxCarryCap = null;
-        Port Port = null;;
+        Port Port;
         if (CustomUtils.isDouble(maxFuel)){
             MaxFuel = Double.valueOf(maxFuel);
+        }else{
+            System.out.println("Invalid input");
         }
         System.out.println("Enter max carry capacity: ");
         String maxCarryCap = scanner.next();
         if (CustomUtils.isDouble(maxCarryCap)){
             MaxCarryCap = Double.valueOf(maxCarryCap);
+        }else{
+            System.out.println("Invalid input");
         }
         if (user.isAdmin()){
             displayPort(user);
@@ -259,7 +273,7 @@ public class PortManagementSystem {
         System.out.println("[3] - OPEN SIDE");
         System.out.println("[4] - REFRIGERATED");
         System.out.println("[5] - LIQUID");
-        String input = scanner.next();
+        String input = scanner.nextLine();
         ContainerType type = ContainerType.DRY_STORAGE;
         switch (input){
             case "1" -> type = ContainerType.DRY_STORAGE;
@@ -274,6 +288,8 @@ public class PortManagementSystem {
         Double Weight = 0.0;
         if (CustomUtils.isDouble(weight)){
             Weight = Double.valueOf(weight);
+        }else{
+            System.out.println("Invalid input");
         }
         if (user.isAdmin()){
             displayPort(user);
