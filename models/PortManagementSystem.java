@@ -19,13 +19,21 @@ public class PortManagementSystem {
 
         return new User(username, password).authenticate();
     }
-
     private static boolean logout(User user, String input_) {
         if (input_.equals("0")) {
             user = null;
             return true;
         }
 
+        return false;
+    }
+    private static boolean matchID(String ID){
+        for (Port ports: new Port().getAllPorts()){
+            if (ports.getId().equals(ID)){
+                return true;
+            }
+            return false;
+        }
         return false;
     }
 
@@ -98,38 +106,207 @@ public class PortManagementSystem {
                 [2] - List all Port's Containers
                 [3] - List all Port's Vehicles
                 [4] - View current User information
-                [4] - View Statistics
+                [5] - View Statistics
                 [0] - Exit/Logout""");
     }
+    private static void PortCRUD(User user){
+        if(user.isAdmin()) {
+            System.out.println("""
+                    [1] - Create
+                    [2] - Update
+                    [3] - Delete""");
+        }
+        System.out.println("Enter option: ");
+        String input = scanner.nextLine();
+        switch (input) {
+            case "1" -> PortCreate();
+            case "2" -> {
+                System.out.println("Enter the port ID you want to make change: ");
+                String portId = scanner.nextLine();
+                if (matchID(portId) == true) {
+                    PortCreate();
+                }
+            }
+            case "3" -> {
 
-    private static void displayResponseLayer0(User user, String string) {
+            }
+        }
+    }
+    private static void PortCreate(){
+        System.out.println("Enter name: ");
+        String name = scanner.nextLine();
+        System.out.println("Enter latitude: ");
+        String latitude = scanner.nextLine();
+        System.out.println("Enter longitude: ");
+        String longitude = scanner.nextLine();
+        System.out.println("Enter max capacity: ");
+        String maxCap = scanner.nextLine();
+        System.out.println("Enter is landing: ");
+        String isLanding = scanner.nextLine();
+        Double Longitude = 0.0;
+        Double Latitude = 0.0;
+        Double MaxCap = 0.0;
+        Boolean IsLanding = false;
+        if (CustomUtils.isDouble(longitude)) {
+            Longitude = Double.valueOf(longitude);
+        } else if (CustomUtils.isDouble(latitude)) {
+            Latitude = Double.valueOf(latitude);
+        } else if (CustomUtils.isDouble(maxCap)) {
+            MaxCap = Double.valueOf(maxCap);
+        } else if (CustomUtils.isBoolean(isLanding)) {
+            IsLanding = Boolean.parseBoolean(isLanding);
+        } else {
+            System.out.println("Invalid input");
+        }
+        Port newPort = new Port(name, Longitude, Latitude, MaxCap, IsLanding);
+    }
+
+    private static void PortUpdate(String ID){
+
+    }
+
+    private static void PortDelete(String ID){
+
+    }
+
+    private static void VehicleCRUD(User user){
+        System.out.println("""
+                    [1] - Create
+                    [2] - Update
+                    [3] - Delete""");
+        System.out.println("Enter option: ");
+        String input = scanner.nextLine();
+        switch (input) {
+            case "1" -> VehicleCreate(user);
+            case "2" -> {
+//                System.out.println("Enter the port ID you want to make change: ");
+//                String portId = scanner.nextLine();
+//                if (matchID(portId) == true) {
+//                    VehicleCreate(user);
+//                }
+            }
+            case "3" -> {
+
+            }
+        }
+    }
+    private static Vehicle VehicleCreate(User user){
+        Vehicle newVehicle;
+        System.out.println("[1] - Ship");
+        System.out.println("[2] - Truck");
+        System.out.println("[3] - Refridgerated Truck");
+        System.out.println("[4] - Tanker Truck");
+        System.out.println("Enter vehicle choice: ");
+        String input = scanner.next();
+        VehicleType type = VehicleType.TRUCK;
+        switch (input){
+            case "1" -> type = VehicleType.SHIP;
+            case "2" -> type = VehicleType.TRUCK;
+            case "3" -> type = VehicleType.REEFER_TRUCK;
+            case "4" -> type = VehicleType.TANKER_TRUCK;
+            default -> System.out.println("Invalid input");
+        }
+        System.out.println("Enter max fuel: ");
+        String maxFuel = scanner.next();
+        Double MaxFuel = null;
+        Double MaxCarryCap = null;
+        Port Port = null;;
+        if (CustomUtils.isDouble(maxFuel)){
+            MaxFuel = Double.valueOf(maxFuel);
+        }
+        System.out.println("Enter max carry capacity: ");
+        String maxCarryCap = scanner.next();
+        if (CustomUtils.isDouble(maxCarryCap)){
+            MaxCarryCap = Double.valueOf(maxCarryCap);
+        }
+        if (user.isAdmin()){
+            displayPort(user);
+            System.out.println("Enter port ID: ");
+            String portId = scanner.next();
+            if (matchID(portId) == true){
+                newVehicle = new Vehicle(type, MaxFuel, MaxCarryCap, new Port().findPortById(portId));
+            }
+        }
+        return newVehicle = new Vehicle(type, MaxFuel, MaxCarryCap, user.getManagerPort());
+    }
+//    private static Vehicle VehicleUpdate(User user){}
+//    private static Vehicle VehicleDelete(User user){}
+    private static void ContainerCRUD (User user) {
+        System.out.println("""
+                [1] - Create
+                [2] - Update
+                [3] - Delete""");
+        System.out.println("Enter option: ");
+        String input = scanner.nextLine();
+        switch (input) {
+            case "1" -> ContainerCreate(user);
+            case "2" -> {
+//                System.out.println("Enter the port ID you want to make change: ");
+//                String portId = scanner.nextLine();
+//                if (matchID(portId) == true) {
+//                    ContainerCreate();
+//                }
+            }
+            case "3" -> {
+
+            }
+        }
+    }
+    private static Container ContainerCreate(User user){
+        Container newContainer;
+        System.out.println("[1] - DRY STORAGE");
+        System.out.println("[2] - OPEN TOP");
+        System.out.println("[3] - OPEN SIDE");
+        System.out.println("[4] - REFRIGERATED");
+        System.out.println("[5] - LIQUID");
+        String input = scanner.next();
+        ContainerType type = ContainerType.DRY_STORAGE;
+        switch (input){
+            case "1" -> type = ContainerType.DRY_STORAGE;
+            case "2" -> type = ContainerType.OPEN_TOP;
+            case "3" -> type = ContainerType.OPEN_SIDE;
+            case "4" -> type = ContainerType.OPEN_TOP;
+            case "5" -> type = ContainerType.LIQUID;
+            default -> System.out.println("Invalid input");
+        }
+        System.out.println("Enter the weight: ");
+        String weight = scanner.nextLine();
+        Double Weight = 0.0;
+        if (CustomUtils.isDouble(weight)){
+            Weight = Double.valueOf(weight);
+        }
+        if (user.isAdmin()){
+            displayPort(user);
+            System.out.println("Enter port ID: ");
+            String portId = scanner.next();
+            if (matchID(portId) == true){
+                newContainer = new Container(type, Weight);
+            }
+        }
+        return newContainer = new Container(type, Weight);
+    }
+//    private static Container ContainerUpdate(User user){}
+//    private static Container ContainerDelete(User user){}
+
+    private static void displayMenuLayer1(User user, String string) {
         CustomUtils.breakLn(5);
         switch (string) {
-            case "1" -> displayPort(user);
-            case "2" -> displayContainer(user);
-            case "3" -> displayVehicle(user);
+            case "1" -> {
+                displayPort(user);
+                PortCRUD(user);
+            }
+            case "2" -> {
+                displayContainer(user);
+                ContainerCRUD(user);
+            }
+            case "3" -> {
+                displayVehicle(user);
+                VehicleCRUD(user);
+            }
             case "4" -> displayUser(user);
             default -> System.out.println("Error! Undefined option.");
         }
     }
-
-//    private static void displayMenuLayer2(User user, String string) {
-//        switch (string) {
-//            case "1" -> {
-//                if (user.isAdmin()) {
-//
-//                }
-//            }
-//
-//            case "2" -> {
-//
-//            }
-//
-//            case "3" -> {
-//
-//            }
-//        }
-//    }
 
     public static void demo() {
         Port assignedPort = new Port(
@@ -171,7 +348,7 @@ public class PortManagementSystem {
                         break;
                     }
 
-                    displayResponseLayer0(user, inputString);
+                    displayMenuLayer1(user, inputString);
                     CustomUtils.pressEnterToContinue();
                 }
             }

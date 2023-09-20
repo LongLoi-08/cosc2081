@@ -20,4 +20,30 @@ public class CustomUtils {
         scanner.nextLine();
 //        scanner.close();
     }
+    public static boolean isDouble(String str) {
+        try {
+            // Attempt to parse the string as a double
+            Double.parseDouble(str);
+            // If parsing succeeds, it's a valid double
+            return true;
+        } catch (NumberFormatException e) {
+            // If parsing fails, it's not a valid double
+            return false;
+        }
+    }
+    public static boolean isBoolean(String str) {
+        String lowerCaseStr = str.toLowerCase(); // Convert the input to lowercase for case-insensitive comparison
+        return lowerCaseStr.equals("true") || lowerCaseStr.equals("false");
+    }
+
+    public static boolean parseBoolean(String str) {
+        String lowerCaseStr = str.toLowerCase();
+        if (lowerCaseStr.equals("true")) {
+            return true;
+        } else if (lowerCaseStr.equals("false")) {
+            return false;
+        } else {
+            throw new IllegalArgumentException("Input is not a valid boolean value: " + str);
+        }
+    }
 }
