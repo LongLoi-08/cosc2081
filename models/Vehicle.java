@@ -45,7 +45,7 @@ public class Vehicle implements interfaces.Vehicle {
         vehicles.add(this);
     }
 
-    public Vehicle(VehicleType vehicleType, double maxFuel, double maxCarryCapacity, Port port) {
+    public Vehicle(VehicleType vehicleType, double maxFuel, double maxCarryCapacity, String currentPortId) {
         this.id = generateId(vehicleType);
         this.vehicleType = vehicleType;
         this.maxFuel = maxFuel;
@@ -53,7 +53,7 @@ public class Vehicle implements interfaces.Vehicle {
         this.maxCarryCapacity = maxCarryCapacity;
         this.currentCarryLoad = 0;
         this.containerIds = new ArrayList<>();
-        this.currentPortId = port.getId();
+        this.currentPortId = currentPortId;
 
         vehicles.add(this);
     }
