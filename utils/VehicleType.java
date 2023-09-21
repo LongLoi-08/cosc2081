@@ -12,6 +12,14 @@ public enum VehicleType {
         this.type = type;
     }
 
+    public static VehicleType getType(String type) {
+        for (VehicleType vehicleType : VehicleType.values()) {
+            if (type.equals(vehicleType.toString())) return vehicleType;
+        }
+
+        return null;
+    }
+
     @Override
     public String toString() {
         return type;

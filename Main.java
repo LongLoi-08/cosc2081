@@ -1,4 +1,7 @@
+import models.Container;
+import models.FileIO;
 import models.PortManagementSystem;
+import utils.ContainerType;
 
 public class Main {
     public static void showCredits() {
@@ -22,6 +25,26 @@ public class Main {
     }
     public static void main(String[] args) {
 //        sysInit();
-        PortManagementSystem.demo();
+//        PortManagementSystem.demo();
+
+//        Container c1 = new Container(ContainerType.OPEN_TOP, 10);
+//        Container c2 = new Container(ContainerType.DRY_STORAGE, 20);
+//        Container c3 = new Container(ContainerType.LIQUID, 30);
+
+        FileIO fileIO = new FileIO();
+//        System.out.println(Boolean.getBoolean("1"));
+//        if (fileIO.saveContainers()) {
+//            System.out.println("Yay!");
+//        } else {
+//            System.out.println("Nay...");
+//        }
+
+//        if (fileIO.loadContainersFromFile()) {
+//            for (Container container : new Container().getAllContainer()) {
+//                System.out.println(container.toStringSaveFileFormat());
+//            }
+//        } else {
+//            System.out.println("oh no...");
+//        }
     }
 }

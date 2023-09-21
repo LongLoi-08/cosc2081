@@ -1,7 +1,12 @@
 package models;
 
+import utils.ContainerType;
+import utils.VehicleType;
+
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class FileIO {
     public final String SAVE_LOCATION = System.getProperty("user.dir")  + "\\data";
@@ -124,6 +129,136 @@ public class FileIO {
 
             return true;
         } catch (IOException e) {
+            return false;
+        }
+    }
+
+    private boolean loadUsersFromFile() {
+        File file = new File(SAVE_LOCATION + "\\" + USER_FILE_NAME);
+
+        if (!file.exists()) return false;
+
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+            String line = "";
+
+            while ((line = bufferedReader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+
+                String username = parts[0];
+                String password = parts[1];
+                boolean isAdmin = parts[2].equals("1");
+                String portId = parts[3];
+
+                new User(username, password, isAdmin, portId);
+            }
+
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    private boolean loadContainersFromFile() {
+        File file = new File(SAVE_LOCATION + "\\" + CONTAINER_FILE_NAME);
+
+        if (!file.exists()) return false;
+
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+            String line = "";
+
+            while ((line = bufferedReader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+
+                String id = parts[0];
+                ContainerType containerType = ContainerType.getType(parts[1]);
+                double weight = Double.parseDouble(parts[2]);
+
+                Container container = new Container(id, containerType, weight);
+            }
+
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    private boolean loadPortsFromFile() {
+        File file = new File(SAVE_LOCATION + "\\" + PORT_FILE_NAME);
+
+        if (!file.exists()) return false;
+
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+            String line = "";
+
+            while ((line = bufferedReader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+
+                String id = parts[0];
+                String name = parts[1];
+                double xLatitude = Double.parseDouble(parts[2]);
+                double yLongitude = Double.parseDouble(parts[3]);
+                double maxCapacity = Double.parseDouble(parts[4]);
+                boolean isLanding = parts[5].equals("1");
+
+                ArrayList<String> vId = new ArrayList<>(Arrays.asList(parts[6].substring(1, parts[6].length() - 1).split(", ")));
+                ArrayList<String> cId = new ArrayList<>(Arrays.asList(parts[7].substring(1, parts[7].length() - 1).split(", ")));
+                ArrayList<String> oTDId = new ArrayList<>(Arrays.asList(parts[8].substring(2, parts[8].length() - 1).split(", ")));
+                ArrayList<String> pTDId = new ArrayList<>(Arrays.asList(parts[9].substring(2, parts[9].length() - 1).split(", ")));
+
+                new Port(id, name, xLatitude, yLongitude, maxCapacity, isLanding, vId, cId, oTDId, pTDId);
+            }
+
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    private boolean loadVehicleFromFile() {
+        File file = new File(SAVE_LOCATION + "\\" + VEHICLE_FILE_NAME);
+
+        if (!file.exists()) return false;
+
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+            String line = "";
+
+            while ((line = bufferedReader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+
+                String id = parts[0];
+                VehicleType vehicleType = VehicleType.getType(parts[1]);
+                double maxFuel = Double.parseDouble(parts[2]);
+                double currentFuel = Double.parseDouble(parts[3]);
+                double maxCarryingCapacity = Double.parseDouble(parts[4]);
+                double currentCarryingLoad = Double.parseDouble(parts[5]);
+
+                ArrayList<String> cId = new ArrayList<>(Arrays.asList(parts[6].substring(1, parts[6].length() - 1).split(", ")));
+
+                String portId = parts[7];
+
+                new Vehicle(id, vehicleType, maxFuel, currentFuel, maxCarryingCapacity, currentCarryingLoad, cId, portId);
+            }
+
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private boolean loadTripsDetailsFromFile() {
+        File file = new File(SAVE_LOCATION + "\\" + TRIP_DETAILS_FILE_NAME);
+
+        if (!file.exists()) return false;
+
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+            String line = "";
+
+            while ((line = bufferedReader.readLine()) != null) {
+
+            }
+
+            return true;
+        } catch (Exception e) {
             return false;
         }
     }

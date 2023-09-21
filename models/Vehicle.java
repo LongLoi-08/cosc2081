@@ -16,8 +16,8 @@ public class Vehicle implements interfaces.Vehicle {
     private double currentFuel;
     private double maxCarryCapacity;
     private double currentCarryLoad;
-    private ArrayList<Container> containers;
-    private Port currentPort;
+    private ArrayList<String> containerIds;
+    private String currentPortId;
 
     public Vehicle() {}
 
@@ -25,15 +25,15 @@ public class Vehicle implements interfaces.Vehicle {
      * For dev purpose only!
      * Use when importing mock data
      */
-    public Vehicle(String id, VehicleType vehicleType, double maxFuel, double currentFuel, double maxCarryCapacity, double currentCarryWeight, ArrayList<Container> containers, Port currentPort) {
+    public Vehicle(String id, VehicleType vehicleType, double maxFuel, double currentFuel, double maxCarryCapacity, double currentCarryWeight, ArrayList<String> containerIds, String currentPortId) {
         this.id = id;
         this.vehicleType = vehicleType;
         this.maxFuel = maxFuel;
         this.currentFuel = currentFuel;
         this.maxCarryCapacity = maxCarryCapacity;
         this.currentCarryLoad = currentCarryWeight;
-        this.containers = containers;
-        this.currentPort = currentPort;
+        this.containerIds = containerIds;
+        this.currentPortId = currentPortId;
 
         int idValue = Integer.parseInt(id.substring(2));
         if (vehicleType == VehicleType.SHIP) {
@@ -52,8 +52,8 @@ public class Vehicle implements interfaces.Vehicle {
         this.currentFuel = maxFuel;
         this.maxCarryCapacity = maxCarryCapacity;
         this.currentCarryLoad = 0;
-        this.containers = new ArrayList<>();
-        this.currentPort = port;
+        this.containerIds = new ArrayList<>();
+        this.currentPortId = port.getId();
 
         vehicles.add(this);
     }
@@ -120,12 +120,16 @@ public class Vehicle implements interfaces.Vehicle {
     }
 
     @Override
-    public ArrayList<Container> getLoadedContainers() {
-        return containers;
+    public ArrayList<String> getLoadedContainerIds() {
+        return containerIds;
+    }
+
+    public String getCurrentPortId() {
+        return currentPortId;
     }
 
     public Port getCurrentPort() {
-        return currentPort;
+        return new Port().findPortById(this.currentPortId);
     }
 
     protected void setVehicleType(VehicleType vehicleType) {
@@ -148,12 +152,12 @@ public class Vehicle implements interfaces.Vehicle {
         this.currentCarryLoad = currentCarryLoad;
     }
 
-    protected void setContainers(ArrayList<Container> containers) {
-        this.containers = containers;
+    protected void setContainers(ArrayList<String> containerIds) {
+        this.containerIds = containerIds;
     }
 
-    protected void setCurrentPort(Port currentPort) {
-        this.currentPort = currentPort;
+    protected void setCurrentPort(String currentPortId) {
+        this.currentPortId = currentPortId;
     }
 
     public Vehicle findVehicleById(String id) {
@@ -168,14 +172,22 @@ public class Vehicle implements interfaces.Vehicle {
     public boolean loadContainer(Container container) {
         // weight capacity validation here
         if (!isLoadable(container)) return false;
-        containers.add(container);
+        containerIds.add(container.getId());
+        this.currentCarryLoad += container.getWeight();
+        return true;
+    }
+
+    public boolean unloadContainer(Container container) {
+        if (this.currentCarryLoad == 0.0) return false;
+        containerIds.remove(container.getId());
+        this.currentCarryLoad -= container.getWeight();
         return true;
     }
 
     public String toStringSaveFileFormat() {
         return String.format(
                 "%s|%s|%.2f|%.2f|%.2f|%.2f|%s|%s",
-                id, vehicleType.toString(), maxFuel, currentFuel, maxCarryCapacity, currentCarryLoad, containers, currentPort.getId()
+                id, vehicleType.toString(), maxFuel, currentFuel, maxCarryCapacity, currentCarryLoad, containerIds, currentPortId
         );
     }
 

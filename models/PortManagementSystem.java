@@ -37,7 +37,7 @@ public class PortManagementSystem {
             return;
         }
 
-        System.out.println(user.getManagerPort().toStringSaveFileFormat());
+        System.out.println(user.getManagingPort().toStringSaveFileFormat());
     }
 
     private static void displayContainer(User user) {
@@ -48,7 +48,7 @@ public class PortManagementSystem {
             return;
         }
 
-        for (Container container : user.getManagerPort().getContainers()) {
+        for (Container container : user.getManagingPort().getContainers()) {
             System.out.println(container.toStringSaveFileFormat());
         }
     }
@@ -61,7 +61,7 @@ public class PortManagementSystem {
             return;
         }
 
-        for (Vehicle vehicle : user.getManagerPort().getVehicles()) {
+        for (Vehicle vehicle : user.getManagingPort().getVehicles()) {
             System.out.println(vehicle.toStringSaveFileFormat());
         }
     }
@@ -112,6 +112,43 @@ public class PortManagementSystem {
             default -> System.out.println("Error! Undefined option.");
         }
     }
+
+    private static Vehicle crudVehicleCreate(VehicleType vehicleType, double maxFuel, double maxCarryCapacity, Port port) {
+        return new Vehicle(vehicleType, maxFuel, maxCarryCapacity, port);
+    }
+
+//    private static boolean crudVehicleUpdate(User user, String id) {
+//        // search for vehicle via id (depends on user.isAdmin())
+//        // ask what to me update
+//
+//        // vehicle type?
+//        //      => get input -> validate -> call setters -> return true if success
+//        // vehicle max fuel?
+//        //      => get input -> validate -> call setters -> return true if success
+//        // vehicle carry cap?
+//        //      => get input -> validate -> call setters -> return true if success
+//        // vehicle port?
+//        //      => get input -> validate -> call setters -> return true if success
+//
+//        // return false in case something is fucked...
+//    }
+//
+//    private static boolean crudVehicleDelete(User user, String id) {
+//        // search for vehicle via id (depends on user.isAdmin())
+//        // if the vehicle is traveling (the obj should be inside the Port.ongoingTrips) then ignore - cannot delete an ongoing trip
+//        // if manager -> search in port -> delete if found -> return true else false
+//        // if admin -> search for each port and find what port contains that vehicle
+//        // IMPORTANT: UNLOAD THE VEHICLE BEFORE DELETING
+//    }
+//
+//    private static void crudVehicle() {
+//        // print options
+//        // if create new vehicle
+//        // => get user input then validate
+//        // if not validate => do something (maybe ask to input again or throw error and return to home screen idk)
+//        // if validated information
+//        crudVehicleCreate(/*input here*/);
+//    }
 
 //    private static void displayMenuLayer2(User user, String string) {
 //        switch (string) {

@@ -2,46 +2,26 @@ package models;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
 
 public class User {
+    private static ArrayList<Boolean> idCache = new ArrayList<>(Collections.nCopies(1000, false));
     private static ArrayList<User> users = new ArrayList<>();
 
-    private static ArrayList<String> adminMenus = new ArrayList<String>() {{
-        // index 0: start menu
-       add("Admin Menu:\n" +
-               "[1] - List all Ports\n" +
-               "[2] - List all Containers\n" +
-               "[3] - List all Vehicles\n" +
-               "[4] - List all Users\n" +
-               "[5] - View Statistics\n" +
-               "[0] - Exit/Logout");
-    }};
-
-    private static ArrayList<String> managerMenus = new ArrayList<String>() {{
-        // index 0: start menu
-        add("Manager Menu:\n" +
-                "[1] - List all Ports\n" +
-                "[2] - List all Containers\n" +
-                "[3] - List all Vehicles\n" +
-                "[4] - List all Users\n" +
-                "[5] - View Statistics\n" +
-                "[0] - Exit/Logout");
-    }};
 
     private String username;
     private String password;
     private boolean isAdmin = false;
-    private Port managerPort = null;
+    private String portID = "";
 
     public User() {}
 
-    public User(String username, String password, boolean isAdmin, Port managerPort) {
+    public User(String username, String password, boolean isAdmin, String portID) {
         this.username = username;
         this.password = password;
         this.isAdmin = isAdmin;
-        this.managerPort = managerPort;
-        users.add(this);
+        this.portID = portID;
     }
 
     public User(String username, String password) {
@@ -50,7 +30,7 @@ public class User {
     }
 
     protected User setAsManager(Port port) {
-        this.managerPort = port;
+        this.portID = port.getId();
         users.add(this);
         return this;
     }
@@ -77,8 +57,9 @@ public class User {
         return isAdmin;
     }
 
-    public Port getManagerPort() {
-        return managerPort;
+    public Port getManagingPort() {
+        // return null if is admin
+        return this.portID.equals("") ? null : new Port().findPortById(this.portID);
     }
 
     protected void setUsername(String username) {
@@ -93,11 +74,11 @@ public class User {
         isAdmin = admin;
     }
 
-    protected void setManagerPort(Port managerPort) {
-        this.managerPort = managerPort;
+    protected void setManagingPort(Port port) {
+        if (!this.isAdmin()) this.portID = port.getId();
     }
 
-    public User authenticate(/*String username, String password*/) {
+    public User authenticate() {
         for (User user : users) {
             if (Objects.equals(user.getUsername(), this.username) && Objects.equals(user.getPassword(), this.password)) {
                 return user;
@@ -109,7 +90,7 @@ public class User {
     public String toStringSaveFileFormat() {
         return String.format(
                 "%s|%s|%d|%s",
-                username, password, isAdmin ? 1 : 0, managerPort
+                username, password, isAdmin ? 1 : 0, portID
         );
     }
 }

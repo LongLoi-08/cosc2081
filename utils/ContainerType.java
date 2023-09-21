@@ -37,6 +37,14 @@ public enum ContainerType {
         return usableVehicle;
     }
 
+    public static ContainerType getType(String type) {
+        for (ContainerType containerType : ContainerType.values()) {
+            if (type.equals(containerType.toString())) return containerType;
+        }
+
+        return null;
+    }
+
     @Override
     public String toString() {
         return type;

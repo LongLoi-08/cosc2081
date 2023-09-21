@@ -93,6 +93,14 @@ public class TripDetails {
         return status;
     }
 
+    public TripDetails findTripDetailsById(String id) {
+        for (TripDetails td : tripDetails) {
+            if (td.getId().equals(id)) return td;
+        }
+
+        return null;
+    }
+
     public String toStringSaveFileFormat() {
         return String.format(
                 "%s|%s|%s|%s|%s|%s|%s|",

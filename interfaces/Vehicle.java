@@ -20,7 +20,7 @@ public interface Vehicle {
 
     public double getCurrentCarryingLoad();
 
-    public ArrayList<Container> getLoadedContainers();
+    public ArrayList<String> getLoadedContainerIds();
 
     public boolean loadContainer(Container container);
 }

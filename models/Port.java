@@ -3,7 +3,6 @@ package models;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Objects;
 
 public class Port {
     /**
@@ -22,10 +21,10 @@ public class Port {
     private double yLongitude;
     private double maxCapacity;
     private boolean isLanding;
-    private ArrayList<Vehicle> vehicles;
-    private ArrayList<Container> containers;
-    private ArrayList<TripDetails> ongoingTraffics;
-    private ArrayList<TripDetails> pastTraffics;
+    private ArrayList<String> vehicleIds;
+    private ArrayList<String> containerIds;
+    private ArrayList<String> ongoingTrafficIds;
+    private ArrayList<String> pastTrafficIds;
 
     public Port() {}
 
@@ -33,17 +32,17 @@ public class Port {
      *
      * Use ONLY when importing mock data / read from files
      */
-    public Port(String id, String name, double xLatitude, double yLongitude, double maxCapacity, boolean isLanding, ArrayList<Vehicle> vehicles, ArrayList<Container> containers, ArrayList<TripDetails> ongoingTraffics, ArrayList<TripDetails> pastTraffics) {
+    public Port(String id, String name, double xLatitude, double yLongitude, double maxCapacity, boolean isLanding, ArrayList<String> vehicleIds, ArrayList<String> containerIds, ArrayList<String> ongoingTrafficIds, ArrayList<String> pastTrafficIds) {
         this.id = id;
         this.name = name;
         this.xLatitude = xLatitude;
         this.yLongitude = yLongitude;
         this.maxCapacity = maxCapacity;
         this.isLanding = isLanding;
-        this.vehicles = vehicles;
-        this.containers = containers;
-        this.ongoingTraffics = ongoingTraffics;
-        this.pastTraffics = pastTraffics;
+        this.vehicleIds = vehicleIds;
+        this.containerIds = containerIds;
+        this.ongoingTrafficIds = ongoingTrafficIds;
+        this.pastTrafficIds = pastTrafficIds;
 
         int idValue = Integer.parseInt(id.substring(1));
         idCache.set(idValue, true);
@@ -66,10 +65,10 @@ public class Port {
         this.yLongitude = yLongitude;
         this.maxCapacity = maxCapacity;
         this.isLanding = isLanding;
-        this.vehicles = new ArrayList<>();
-        this.containers = new ArrayList<>();
-        this.ongoingTraffics = new ArrayList<>();
-        this.pastTraffics = new ArrayList<>();
+        this.vehicleIds = new ArrayList<>();
+        this.containerIds = new ArrayList<>();
+        this.ongoingTrafficIds = new ArrayList<>();
+        this.pastTrafficIds = new ArrayList<>();
 
         ports.add(this);
     }
@@ -115,32 +114,56 @@ public class Port {
     }
 
     public ArrayList<Vehicle> getVehicles() {
+        ArrayList<Vehicle> vehicles = new ArrayList<>();
+
+        for (String id_ : this.vehicleIds) {
+            vehicles.add(new Vehicle().findVehicleById(id_));
+        }
+
         return vehicles;
     }
 
     public ArrayList<Container> getContainers() {
+        ArrayList<Container> containers = new ArrayList<>();
+
+        for (String id_ : this.containerIds) {
+            containers.add(new Container().findContainerById(id_));
+        }
+
         return containers;
     }
 
     public ArrayList<TripDetails> getOngoingTraffics() {
-        return ongoingTraffics;
+        ArrayList<TripDetails> tripDetails = new ArrayList<>();
+
+        for (String id_ : this.ongoingTrafficIds) {
+            tripDetails.add(new TripDetails().findTripDetailsById(id_));
+        }
+
+        return tripDetails;
     }
 
     public ArrayList<TripDetails> getPastTraffics() {
-        return pastTraffics;
+        ArrayList<TripDetails> tripDetails = new ArrayList<>();
+
+        for (String id_ : this.pastTrafficIds) {
+            tripDetails.add(new TripDetails().findTripDetailsById(id_));
+        }
+
+        return tripDetails;
     }
 
     public Container findContainerInPortById(String id) {
-        for (Container container : this.containers) {
-            if (id.equals(container.getId())) return container;
+        for (String id_ : this.containerIds) {
+            if (id.equals(id_)) return new Container().findContainerById(id);
         }
 
         return null;
     }
 
     public Vehicle findVehicleInPortById(String id) {
-        for (Vehicle vehicle : this.vehicles) {
-            if (id.equals(vehicle.getId())) return vehicle;
+        for (String id_ : this.vehicleIds) {
+            if (id_.equals(id)) return new Vehicle().findVehicleById(id);
         }
 
         return null;
@@ -156,7 +179,9 @@ public class Port {
 
     public ArrayList<Vehicle> findSuitableVehiclesForContainer(Container container) {
         ArrayList<Vehicle> suitableVehicle = new ArrayList<>();
-        for (Vehicle vehicle : this.vehicles) {
+
+        for (String id_ : this.vehicleIds) {
+            Vehicle vehicle = new Vehicle().findVehicleById(id);
             if (container.getUsableVehicle().contains(vehicle.getVehicleType())) suitableVehicle.add(vehicle);
         }
         return suitableVehicle;
@@ -174,14 +199,17 @@ public class Port {
 
     public boolean loadContainerToVehicle(Container container, Vehicle vehicle) {
         if (!container.getUsableVehicle().contains(vehicle.getVehicleType())) return false;
+
         if (!vehicle.loadContainer(container)) return false;
-        this.containers.remove(container);
+
+        this.containerIds.remove(container.getId());
         return true;
     }
 
     public void unloadContainerFromVehicle(Vehicle vehicle) {
-        this.containers.addAll(vehicle.getLoadedContainers());
-        vehicle.getLoadedContainers().clear();
+        this.containerIds.addAll(vehicle.getLoadedContainerIds());
+        vehicle.getLoadedContainerIds().clear();
+        vehicle.setCurrentCarryLoad(0.0);
     }
 
     public void startTrip(Vehicle vehicle, Port port) {
@@ -189,15 +217,15 @@ public class Port {
         LocalDate now_ = LocalDate.now();
         TripDetails tripDetails = new TripDetails(now_, now_.plusDays(distance), vehicle, this, port);
 
-        this.vehicles.remove(vehicle);
-        this.ongoingTraffics.add(tripDetails);
-        port.ongoingTraffics.add(tripDetails);
+        this.vehicleIds.remove(vehicle.getId());
+        this.ongoingTrafficIds.add(tripDetails.getId());
+        port.ongoingTrafficIds.add(tripDetails.getId());
     }
 
     public String toStringSaveFileFormat() {
         return String.format(
                 "%s|%s|%.2f|%.2f|%.2f|%d|%s|%s|%s|%s",
-                id, name, xLatitude, yLongitude, maxCapacity, isLanding ? 1 : 0, vehicles, containers, ongoingTraffics, pastTraffics
+                id, name, xLatitude, yLongitude, maxCapacity, isLanding ? 1 : 0, vehicleIds, containerIds, ongoingTrafficIds, pastTrafficIds
         );
     }
 
