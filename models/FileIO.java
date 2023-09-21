@@ -134,7 +134,7 @@ public class FileIO {
         }
     }
 
-    private boolean loadUsersFromFile() {
+    protected boolean loadUsersFromFile() {
         File file = new File(SAVE_LOCATION + "\\" + USER_FILE_NAME);
 
         if (!file.exists()) return false;
@@ -159,7 +159,7 @@ public class FileIO {
         }
     }
 
-    private boolean loadContainersFromFile() {
+    protected boolean loadContainersFromFile() {
         File file = new File(SAVE_LOCATION + "\\" + CONTAINER_FILE_NAME);
 
         if (!file.exists()) return false;
@@ -183,7 +183,7 @@ public class FileIO {
         }
     }
 
-    private boolean loadVehicleFromFile() {
+    protected boolean loadVehicleFromFile() {
         File file = new File(SAVE_LOCATION + "\\" + VEHICLE_FILE_NAME);
 
         if (!file.exists()) return false;
@@ -214,7 +214,7 @@ public class FileIO {
         }
     }
 
-    private boolean loadPortsFromFile() {
+    protected boolean loadPortsFromFile() {
         File file = new File(SAVE_LOCATION + "\\" + PORT_FILE_NAME);
 
         if (!file.exists()) return false;
@@ -261,7 +261,7 @@ public class FileIO {
         }
     }
 
-    private boolean loadTripsDetailsFromFile() {
+    protected boolean loadTripsDetailsFromFile() {
         File file = new File(SAVE_LOCATION + "\\" + TRIP_DETAILS_FILE_NAME);
 
         if (!file.exists()) return false;
@@ -289,4 +289,6 @@ public class FileIO {
             return false;
         }
     }
+
+
 }
