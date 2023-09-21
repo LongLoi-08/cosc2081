@@ -215,7 +215,7 @@ public class Port {
     public void startTrip(Vehicle vehicle, Port port) {
         int distance = (int) distanceTo(port);  // temporary implementation, should be rework later
         LocalDate now_ = LocalDate.now();
-        TripDetails tripDetails = new TripDetails(now_, now_.plusDays(distance), vehicle, this, port);
+        TripDetails tripDetails = new TripDetails(now_, now_.plusDays(distance), vehicle.getId(), this.getId(), port.getId());
 
         this.vehicleIds.remove(vehicle.getId());
         this.ongoingTrafficIds.add(tripDetails.getId());

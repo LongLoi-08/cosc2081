@@ -13,11 +13,11 @@ public class TripDetails {
     private static ArrayList<TripDetails> tripDetails = new ArrayList<>();
 
     private String id;
-    private LocalDate departure;
+    private LocalDate departure;    // yyyy-mm-dd
     private LocalDate arrival;
-    private Vehicle vehicle;
-    private Port departurePort;
-    private Port arrivalPort;
+    private String vehicleId;
+    private String departurePortId;
+    private String arrivalPortId;
     private String status;
 
     public TripDetails() {}
@@ -26,13 +26,13 @@ public class TripDetails {
      * For dev purpose only!
      * Use when importing mock data
      */
-    public TripDetails(String id, LocalDate departure, LocalDate arrival, Vehicle vehicle, Port departurePort, Port arrivalPort, String status) {
+    public TripDetails(String id, LocalDate departure, LocalDate arrival, String vehicleId, String departurePortId, String arrivalPortId, String status) {
         this.id = id;
         this.departure = departure;
         this.arrival = arrival;
-        this.vehicle = vehicle;
-        this.departurePort = departurePort;
-        this.arrivalPort = arrivalPort;
+        this.vehicleId = vehicleId;
+        this.departurePortId = departurePortId;
+        this.arrivalPortId = arrivalPortId;
         this.status = status;
 
         int idValue = Integer.parseInt(id.substring(2));
@@ -41,13 +41,13 @@ public class TripDetails {
         tripDetails.add(this);
     }
 
-    public TripDetails(LocalDate departure, LocalDate arrival, Vehicle vehicle, Port departurePort, Port arrivalPort) {
+    public TripDetails(LocalDate departure, LocalDate arrival, String vehicleId, String departurePortId, String arrivalPortId) {
         this.id = generateId();
         this.departure = departure;
         this.arrival = arrival;
-        this.vehicle = vehicle;
-        this.departurePort = departurePort;
-        this.arrivalPort = arrivalPort;
+        this.vehicleId = vehicleId;
+        this.departurePortId = departurePortId;
+        this.arrivalPortId = arrivalPortId;
         this.status = STATUS_ON_GOING;
 
         tripDetails.add(this);
@@ -78,15 +78,15 @@ public class TripDetails {
     }
 
     public Vehicle getVehicle() {
-        return vehicle;
+        return new Vehicle().findVehicleById(this.vehicleId);
     }
 
     public Port getDeparturePort() {
-        return departurePort;
+        return new Port().findPortById(departurePortId);
     }
 
     public Port getArrivalPort() {
-        return arrivalPort;
+        return new Port().findPortById(arrivalPortId);
     }
 
     public String getStatus() {
@@ -104,7 +104,7 @@ public class TripDetails {
     public String toStringSaveFileFormat() {
         return String.format(
                 "%s|%s|%s|%s|%s|%s|%s|",
-                id, departure.toString(), arrival.toString(), vehicle.getId(), departurePort.getId(), arrivalPort.getId(), status
+                id, departure.toString(), arrival.toString(), vehicleId, departurePortId, arrivalPortId, status
         );
     }
 

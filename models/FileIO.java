@@ -4,6 +4,7 @@ import utils.ContainerType;
 import utils.VehicleType;
 
 import java.io.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -182,38 +183,6 @@ public class FileIO {
         }
     }
 
-    private boolean loadPortsFromFile() {
-        File file = new File(SAVE_LOCATION + "\\" + PORT_FILE_NAME);
-
-        if (!file.exists()) return false;
-
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
-            String line = "";
-
-            while ((line = bufferedReader.readLine()) != null) {
-                String[] parts = line.split("\\|");
-
-                String id = parts[0];
-                String name = parts[1];
-                double xLatitude = Double.parseDouble(parts[2]);
-                double yLongitude = Double.parseDouble(parts[3]);
-                double maxCapacity = Double.parseDouble(parts[4]);
-                boolean isLanding = parts[5].equals("1");
-
-                ArrayList<String> vId = new ArrayList<>(Arrays.asList(parts[6].substring(1, parts[6].length() - 1).split(", ")));
-                ArrayList<String> cId = new ArrayList<>(Arrays.asList(parts[7].substring(1, parts[7].length() - 1).split(", ")));
-                ArrayList<String> oTDId = new ArrayList<>(Arrays.asList(parts[8].substring(2, parts[8].length() - 1).split(", ")));
-                ArrayList<String> pTDId = new ArrayList<>(Arrays.asList(parts[9].substring(2, parts[9].length() - 1).split(", ")));
-
-                new Port(id, name, xLatitude, yLongitude, maxCapacity, isLanding, vId, cId, oTDId, pTDId);
-            }
-
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
-    }
-
     private boolean loadVehicleFromFile() {
         File file = new File(SAVE_LOCATION + "\\" + VEHICLE_FILE_NAME);
 
@@ -245,6 +214,53 @@ public class FileIO {
         }
     }
 
+    private boolean loadPortsFromFile() {
+        File file = new File(SAVE_LOCATION + "\\" + PORT_FILE_NAME);
+
+        if (!file.exists()) return false;
+
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+            String line = "";
+
+            while ((line = bufferedReader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+
+                String id = parts[0];
+                String name = parts[1];
+                double xLatitude = Double.parseDouble(parts[2]);
+                double yLongitude = Double.parseDouble(parts[3]);
+                double maxCapacity = Double.parseDouble(parts[4]);
+                boolean isLanding = parts[5].equals("1");
+
+                ArrayList<String> vId = new ArrayList<>(Arrays.asList(parts[6].substring(1, parts[6].length() - 1).split(", ")));
+                ArrayList<String> cId = new ArrayList<>(Arrays.asList(parts[7].substring(1, parts[7].length() - 1).split(", ")));
+                ArrayList<String> oTDId = new ArrayList<>(Arrays.asList(parts[8].substring(2, parts[8].length() - 1).split(", ")));
+                ArrayList<String> pTDId = new ArrayList<>(Arrays.asList(parts[9].substring(2, parts[9].length() - 1).split(", ")));
+
+                // move the trips that finish to the past array
+                for (String id_ : oTDId) {
+                    TripDetails tripDetails = new TripDetails().findTripDetailsById(id_);
+                    if (LocalDate.now().isAfter(tripDetails.getArrival())) {
+                        oTDId.remove(id_);
+                        pTDId.add(id_);
+                    }
+                }
+
+                // delete trips that has arrived 7days or more
+                for (String id_ : pTDId) {
+                    TripDetails tripDetails = new TripDetails().findTripDetailsById(id_);
+                    if (LocalDate.now().isAfter(tripDetails.getArrival().plusDays(7))) pTDId.remove(id_);
+                }
+
+                new Port(id, name, xLatitude, yLongitude, maxCapacity, isLanding, vId, cId, oTDId, pTDId);
+            }
+
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
     private boolean loadTripsDetailsFromFile() {
         File file = new File(SAVE_LOCATION + "\\" + TRIP_DETAILS_FILE_NAME);
 
@@ -254,7 +270,18 @@ public class FileIO {
             String line = "";
 
             while ((line = bufferedReader.readLine()) != null) {
+                String[] parts = line.split("\\|");
 
+                String id = parts[0];
+                LocalDate departure = LocalDate.parse(parts[1]);
+                LocalDate arrival = LocalDate.parse(parts[2]);
+                String vehicleId = parts[3];
+                String departurePortId = parts[4];
+                String arrivalPortId = parts[5];
+                String status = parts[6];
+
+                // only create if arrival is less than 7days
+                if (LocalDate.now().isBefore(arrival.plusDays(7))) new TripDetails(id, departure, arrival, vehicleId, departurePortId, arrivalPortId, status);
             }
 
             return true;

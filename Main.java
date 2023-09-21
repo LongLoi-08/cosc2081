@@ -3,6 +3,8 @@ import models.FileIO;
 import models.PortManagementSystem;
 import utils.ContainerType;
 
+import java.time.LocalDate;
+
 public class Main {
     public static void showCredits() {
         System.out.println("""
@@ -27,24 +29,7 @@ public class Main {
 //        sysInit();
 //        PortManagementSystem.demo();
 
-//        Container c1 = new Container(ContainerType.OPEN_TOP, 10);
-//        Container c2 = new Container(ContainerType.DRY_STORAGE, 20);
-//        Container c3 = new Container(ContainerType.LIQUID, 30);
-
-        FileIO fileIO = new FileIO();
-//        System.out.println(Boolean.getBoolean("1"));
-//        if (fileIO.saveContainers()) {
-//            System.out.println("Yay!");
-//        } else {
-//            System.out.println("Nay...");
-//        }
-
-//        if (fileIO.loadContainersFromFile()) {
-//            for (Container container : new Container().getAllContainer()) {
-//                System.out.println(container.toStringSaveFileFormat());
-//            }
-//        } else {
-//            System.out.println("oh no...");
-//        }
+//        System.out.println(LocalDate.parse("2023-09-21").toString());
+        System.out.println(LocalDate.parse("2023-09-21").compareTo(LocalDate.parse("2023-09-14")));
     }
 }
