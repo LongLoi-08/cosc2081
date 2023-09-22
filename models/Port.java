@@ -100,18 +100,23 @@ public class Port {
     public String getName() {
         return name;
     }
+    protected String setName(String name){return this.name = name;}
 
     public double[] getCoordinate() {
         return new double[]{xLatitude, yLongitude};
     }
+    protected double setLatitude(Double latitude) {return this.xLatitude = latitude;}
+    protected double setLongitude(Double longitude) {return this.yLongitude = longitude;}
 
     public double getMaxCapacity() {
         return maxCapacity;
     }
+    protected double setMaxCapacity(Double MaxCap) {return this.maxCapacity = MaxCap;}
 
     public boolean isLanding() {
         return isLanding;
     }
+    protected boolean setIsLanding(Boolean isLanding){return this.isLanding = isLanding;}
 
     public ArrayList<Vehicle> getVehicles() {
         ArrayList<Vehicle> vehicles = new ArrayList<>();

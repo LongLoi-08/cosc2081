@@ -27,7 +27,7 @@ public class Main {
     }
     public static void main(String[] args) {
 //        sysInit();
-//        PortManagementSystem.demo();
+        PortManagementSystem.demo();
 
 //        System.out.println(LocalDate.parse("2023-09-21").toString());
         System.out.println(LocalDate.parse("2023-09-21").compareTo(LocalDate.parse("2023-09-14")));
