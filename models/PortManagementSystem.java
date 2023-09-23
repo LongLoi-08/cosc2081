@@ -3,7 +3,10 @@ import utils.ContainerType;
 import utils.CustomUtils;
 import utils.VehicleType;
 
+import java.util.ArrayList;
 import java.util.Scanner;
+
+import static models.Port.ports;
 
 public class PortManagementSystem {
     private static final Scanner scanner = new Scanner(System.in);
@@ -175,90 +178,118 @@ public class PortManagementSystem {
                     }
                 }
                 case "3" -> {
-
+                    System.out.println("Enter the port ID you want to delete: ");
+                    String portId = scanner.nextLine();
+                    if (matchID(portId)) {
+                        PortDelete(portId);
+                    } else {
+                        System.out.println("Port not found with ID: " + portId);
+                    }
                 }
             }
+            }
+        }
+
+
+        private static void PortCreate(){
+            System.out.println("Enter name: ");
+            String name = scanner.nextLine();
+            System.out.println("Enter latitude: ");
+            String latitude = scanner.nextLine();
+            Double Latitude = 0.0;
+            if (CustomUtils.isDouble(latitude)){
+                Latitude = Double.valueOf(latitude);
+            }else{
+                System.out.println("Invalid input");
+            }
+            System.out.println("Enter longitude: ");
+            String longitude = scanner.nextLine();
+            Double Longitude = 0.0;
+            if (CustomUtils.isDouble(longitude)){
+                Longitude = Double.valueOf(longitude);
+            }else{
+                System.out.println("Invalid input");
+            }
+            System.out.println("Enter max capacity: ");
+            String maxCap = scanner.nextLine();
+            Double MaxCap = 0.0;
+            if (CustomUtils.isDouble(maxCap)){
+                MaxCap = Double.valueOf(maxCap);
+            }else{
+                System.out.println("Invalid input");
+            }System.out.println("Enter is landing: ");
+            String isLanding = scanner.nextLine();
+            Boolean IsLanding = false;
+            if (CustomUtils.isBoolean(isLanding)) {
+                IsLanding = Boolean.parseBoolean(isLanding);
+            }else{
+                System.out.println("Invalid input");
+            }
+            Port newPort = new Port(name, Longitude, Latitude, MaxCap, IsLanding);
+        }
+
+        private static void PortUpdate(String ID){
+            Port updatePort = new Port().findPortById(ID);
+            System.out.println("Enter name: ");
+            String name = scanner.nextLine();
+            updatePort.setName(name);
+            System.out.println("Enter latitude: ");
+            String latitude = scanner.nextLine();
+            if (CustomUtils.isDouble(latitude)){
+                Double Latitude = Double.valueOf(latitude);
+                updatePort.setLatitude(Latitude);
+            }else{
+                System.out.println("Invalid input");
+            }
+            System.out.println("Enter longitude: ");
+            String longitude = scanner.nextLine();
+            if (CustomUtils.isDouble(longitude)){
+                Double Longitude = Double.valueOf(longitude);
+                updatePort.setLongitude(Longitude);
+            }else{
+                System.out.println("Invalid input");
+            }
+            System.out.println("Enter max capacity: ");
+            String maxCap = scanner.nextLine();
+            if (CustomUtils.isDouble(maxCap)){
+                Double MaxCap = Double.valueOf(maxCap);
+                updatePort.setMaxCapacity(MaxCap);
+            }else{
+                System.out.println("Invalid input");
+            }System.out.println("Enter is landing: ");
+            String isLanding = scanner.nextLine();
+            if (CustomUtils.isBoolean(isLanding)) {
+                Boolean IsLanding = Boolean.parseBoolean(isLanding);
+                updatePort.setIsLanding(IsLanding);
+            }else{
+                System.out.println("Invalid input");
+            }
+        }
+
+    private static void PortDelete(String ID) {
+        Port portToDelete = new Port().findPortById(ID);
+
+        if (portToDelete != null) {
+            System.out.println("Are you sure you want to delete this port? (yes/no)");
+            String confirmation = scanner.nextLine().toLowerCase();
+            if (confirmation.equals("yes")) {
+                ports.remove(portToDelete);
+                System.out.println("Port deleted successfully.");
+            } else {
+                System.out.println("Deletion canceled.");
+            }
+        } else {
+            System.out.println("Port not found with ID: " + ID);
         }
     }
 
-    private static void PortCreate(){
-        System.out.println("Enter name: ");
-        String name = scanner.nextLine();
-        System.out.println("Enter latitude: ");
-        String latitude = scanner.nextLine();
-        Double Latitude = 0.0;
-        if (CustomUtils.isDouble(latitude)){
-            Latitude = Double.valueOf(latitude);
-        }else{
-            System.out.println("Invalid input");
-        }
-        System.out.println("Enter longitude: ");
-        String longitude = scanner.nextLine();
-        Double Longitude = 0.0;
-        if (CustomUtils.isDouble(longitude)){
-            Longitude = Double.valueOf(longitude);
-        }else{
-            System.out.println("Invalid input");
-        }
-        System.out.println("Enter max capacity: ");
-        String maxCap = scanner.nextLine();
-        Double MaxCap = 0.0;
-        if (CustomUtils.isDouble(maxCap)){
-            MaxCap = Double.valueOf(maxCap);
-        }else{
-            System.out.println("Invalid input");
-        }System.out.println("Enter is landing: ");
-        String isLanding = scanner.nextLine();
-        Boolean IsLanding = false;
-        if (CustomUtils.isBoolean(isLanding)) {
-            IsLanding = Boolean.parseBoolean(isLanding);
-        }else{
-            System.out.println("Invalid input");
-        }
-        Port newPort = new Port(name, Longitude, Latitude, MaxCap, IsLanding);
-    }
 
-    private static void PortUpdate(String ID){
-        Port updatePort = new Port().findPortById(ID);
-        System.out.println("Enter name: ");
-        String name = scanner.nextLine();
-        updatePort.setName(name);
-        System.out.println("Enter latitude: ");
-        String latitude = scanner.nextLine();
-        if (CustomUtils.isDouble(latitude)){
-            Double Latitude = Double.valueOf(latitude);
-            updatePort.setLatitude(Latitude);
-        }else{
-            System.out.println("Invalid input");
-        }
-        System.out.println("Enter longitude: ");
-        String longitude = scanner.nextLine();
-        if (CustomUtils.isDouble(longitude)){
-            Double Longitude = Double.valueOf(longitude);
-            updatePort.setLongitude(Longitude);
-        }else{
-            System.out.println("Invalid input");
-        }
-        System.out.println("Enter max capacity: ");
-        String maxCap = scanner.nextLine();
-        if (CustomUtils.isDouble(maxCap)){
-            Double MaxCap = Double.valueOf(maxCap);
-            updatePort.setMaxCapacity(MaxCap);
-        }else{
-            System.out.println("Invalid input");
-        }System.out.println("Enter is landing: ");
-        String isLanding = scanner.nextLine();
-        if (CustomUtils.isBoolean(isLanding)) {
-            Boolean IsLanding = Boolean.parseBoolean(isLanding);
-            updatePort.setIsLanding(IsLanding);
-        }else{
-            System.out.println("Invalid input");
-        }
-    }
 
-    private static void PortDelete(String ID){
 
-    }
+
+
+
+
 
     private static void VehicleCRUD(User user){
         System.out.println("""
