@@ -202,6 +202,14 @@ public class Port {
         );
     }
 
+    protected void addVehicleToPort(String vehicleId) {
+        vehicleIds.add(vehicleId);
+    }
+
+    protected void addContainerToPort(String containerId) {
+        containerIds.add(containerId);
+    }
+
     public boolean loadContainerToVehicle(Container container, Vehicle vehicle) {
         if (!container.getUsableVehicle().contains(vehicle.getVehicleType())) return false;
 
@@ -223,8 +231,12 @@ public class Port {
         TripDetails tripDetails = new TripDetails(now_, now_.plusDays(distance), vehicle.getId(), this.getId(), port.getId());
 
         this.vehicleIds.remove(vehicle.getId());
-        this.ongoingTrafficIds.add(tripDetails.getId());
-        port.ongoingTrafficIds.add(tripDetails.getId());
+//        this.ongoingTrafficIds.add(tripDetails.getId());
+//        port.ongoingTrafficIds.add(tripDetails.getId());
+    }
+
+    protected void addTripDetails(String id) {
+        this.ongoingTrafficIds.add(id);
     }
 
     public String toStringSaveFileFormat() {

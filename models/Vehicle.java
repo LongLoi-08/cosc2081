@@ -35,6 +35,8 @@ public class Vehicle implements interfaces.Vehicle {
         this.containerIds = containerIds;
         this.currentPortId = currentPortId;
 
+        new Port().findPortById(currentPortId).addVehicleToPort(this.id);
+
         int idValue = Integer.parseInt(id.substring(2));
         if (vehicleType == VehicleType.SHIP) {
             idCacheS.set(idValue, true);
@@ -54,6 +56,8 @@ public class Vehicle implements interfaces.Vehicle {
         this.currentCarryLoad = 0;
         this.containerIds = new ArrayList<>();
         this.currentPortId = currentPortId;
+
+        new Port().findPortById(currentPortId).addVehicleToPort(this.id);
 
         vehicles.add(this);
     }

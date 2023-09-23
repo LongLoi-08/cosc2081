@@ -35,6 +35,9 @@ public class TripDetails {
         this.arrivalPortId = arrivalPortId;
         this.status = status;
 
+        new Port().findPortById(departurePortId).addTripDetails(this.id);
+        new Port().findPortById(arrivalPortId).addTripDetails(this.id);
+
         int idValue = Integer.parseInt(id.substring(2));
         idCache.set(idValue, true);
 

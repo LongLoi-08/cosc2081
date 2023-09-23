@@ -7,7 +7,6 @@ import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class FileIO {
     public final String SAVE_LOCATION = System.getProperty("user.dir")  + "\\data";
@@ -290,5 +289,149 @@ public class FileIO {
         }
     }
 
+    private void generate5OPorts() {
+        new Port("Port 0", 0, 0, 5000, true);
+        new Port("Port 1", 0, 100, 5000, false);
+        new Port("Port 2", 100, 100, 5000, true);
+        new Port("Port 3", 100, 0, 5000, false);
+        new Port("Port 4", 100, -100, 5000, true);
+    }
 
+    private void generate30Containers() {
+        new Container(ContainerType.OPEN_TOP, 10);
+        new Container(ContainerType.OPEN_TOP, 10);
+        new Container(ContainerType.OPEN_TOP, 10);
+        new Container(ContainerType.OPEN_TOP, 10);
+        new Container(ContainerType.OPEN_TOP, 10);
+        new Container(ContainerType.OPEN_TOP, 10);
+
+        new Container(ContainerType.LIQUID, 20);
+        new Container(ContainerType.LIQUID, 20);
+        new Container(ContainerType.LIQUID, 20);
+        new Container(ContainerType.LIQUID, 20);
+        new Container(ContainerType.LIQUID, 20);
+        new Container(ContainerType.LIQUID, 20);
+
+        new Container(ContainerType.DRY_STORAGE, 30);
+        new Container(ContainerType.DRY_STORAGE, 30);
+        new Container(ContainerType.DRY_STORAGE, 30);
+        new Container(ContainerType.DRY_STORAGE, 30);
+        new Container(ContainerType.DRY_STORAGE, 30);
+        new Container(ContainerType.DRY_STORAGE, 30);
+
+        new Container(ContainerType.OPEN_SIDE, 40);
+        new Container(ContainerType.OPEN_SIDE, 40);
+        new Container(ContainerType.OPEN_SIDE, 40);
+        new Container(ContainerType.OPEN_SIDE, 40);
+        new Container(ContainerType.OPEN_SIDE, 40);
+        new Container(ContainerType.OPEN_SIDE, 40);
+
+        new Container(ContainerType.REFRIGERATED, 50);
+        new Container(ContainerType.REFRIGERATED, 50);
+        new Container(ContainerType.REFRIGERATED, 50);
+        new Container(ContainerType.REFRIGERATED, 50);
+        new Container(ContainerType.REFRIGERATED, 50);
+        new Container(ContainerType.REFRIGERATED, 50);
+    }
+
+    private void generate25Vehicles() {
+        ArrayList<Port> ports = new Port().getAllPorts();
+
+        new Vehicle(VehicleType.TRUCK, 1000, 500, ports.get(0).getId());
+        new Vehicle(VehicleType.TRUCK, 1000, 500, ports.get(1).getId());
+        new Vehicle(VehicleType.TRUCK, 1000, 500, ports.get(2).getId());
+        new Vehicle(VehicleType.TRUCK, 1000, 500, ports.get(3).getId());
+        new Vehicle(VehicleType.TRUCK, 1000, 500, ports.get(4).getId());
+
+        new Vehicle(VehicleType.TRUCK, 1000, 500, ports.get(0).getId());
+        new Vehicle(VehicleType.TRUCK, 1000, 500, ports.get(1).getId());
+        new Vehicle(VehicleType.TRUCK, 1000, 500, ports.get(2).getId());
+        new Vehicle(VehicleType.TRUCK, 1000, 500, ports.get(3).getId());
+        new Vehicle(VehicleType.TRUCK, 1000, 500, ports.get(4).getId());
+
+        new Vehicle(VehicleType.REEFER_TRUCK, 1000, 500, ports.get(0).getId());
+        new Vehicle(VehicleType.REEFER_TRUCK, 1000, 500, ports.get(1).getId());
+        new Vehicle(VehicleType.REEFER_TRUCK, 1000, 500, ports.get(2).getId());
+        new Vehicle(VehicleType.REEFER_TRUCK, 1000, 500, ports.get(3).getId());
+        new Vehicle(VehicleType.REEFER_TRUCK, 1000, 500, ports.get(4).getId());
+
+        new Vehicle(VehicleType.TANKER_TRUCK, 1000, 500, ports.get(0).getId());
+        new Vehicle(VehicleType.TANKER_TRUCK, 1000, 500, ports.get(1).getId());
+        new Vehicle(VehicleType.TANKER_TRUCK, 1000, 500, ports.get(2).getId());
+        new Vehicle(VehicleType.TANKER_TRUCK, 1000, 500, ports.get(3).getId());
+        new Vehicle(VehicleType.TANKER_TRUCK, 1000, 500, ports.get(4).getId());
+
+        new Vehicle(VehicleType.SHIP, 3000, 500, ports.get(0).getId());
+        new Vehicle(VehicleType.SHIP, 3000, 500, ports.get(1).getId());
+        new Vehicle(VehicleType.SHIP, 3000, 500, ports.get(2).getId());
+        new Vehicle(VehicleType.SHIP, 3000, 500, ports.get(3).getId());
+        new Vehicle(VehicleType.SHIP, 3000, 500, ports.get(4).getId());
+
+        ArrayList<Container> containers = new Container().getAllContainer();
+
+        for (int indexContainer = 0; indexContainer <= 5; indexContainer++) {
+            for (int indexPort = 0; indexPort < 5; indexPort++) {
+                ports.get(indexPort).addContainerToPort(containers.get(indexContainer).getId());
+                ports.get(indexPort).addContainerToPort(containers.get(indexContainer + 6).getId());
+                ports.get(indexPort).addContainerToPort(containers.get(indexContainer + (6 * 2)).getId());
+                ports.get(indexPort).addContainerToPort(containers.get(indexContainer + (6 * 3)).getId());
+                ports.get(indexPort).addContainerToPort(containers.get(indexContainer + (6 * 4)).getId());
+            }
+        }
+    }
+
+    private void mockFLoadC2V(Port port) {
+        for (int i = 0; i < 5; i++) {
+            port.loadContainerToVehicle(port.getContainers().get(0), port.getVehicles().get(i));
+        }
+    }
+
+    private void mockFStartTrips(Port port) {
+        for (Port destPort : new Port().getAllPorts()) {
+            if (!port.getId().equals(destPort.getId())) port.startTrip(port.getVehicles().get(0), destPort);
+        }
+    }
+
+    private void generate25TripDetails() {
+        ArrayList<Port> ports = new Port().getAllPorts();
+
+        Port p1 = ports.get(0);
+        Port p2 = ports.get(1);
+        Port p3 = ports.get(2);
+        Port p4 = ports.get(3);
+        Port p5 = ports.get(4);
+
+        mockFLoadC2V(p1);
+        mockFLoadC2V(p2);
+        mockFLoadC2V(p3);
+        mockFLoadC2V(p4);
+        mockFLoadC2V(p5);
+
+        mockFStartTrips(p1);
+        mockFStartTrips(p2);
+        mockFStartTrips(p3);
+        mockFStartTrips(p4);
+        mockFStartTrips(p5);
+    }
+
+    private void mockFGenerate5Manager() {
+        int i = 0;
+        for (Port port : new Port().getAllPorts()) {
+            User manager = new User("manager" + String.valueOf(i), "123").setAsManager(port);
+            i++;
+        }
+    }
+
+    private void generateUsers() {
+        mockFGenerate5Manager();
+        User admin_ = new User("admin", "123").setAsAdmin();
+    }
+
+    public void generateMockData() {
+        generate5OPorts();
+        generate30Containers();
+        generate25Vehicles();
+        generate25TripDetails();
+        generateUsers();
+    }
 }

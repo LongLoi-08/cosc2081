@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 public class PortManagementSystem {
     private static final Scanner scanner = new Scanner(System.in);
+    private static FileIO fileIO = new FileIO();
 
     private static User login() {
         CustomUtils.breakLn(5);
@@ -38,6 +39,7 @@ public class PortManagementSystem {
         }
         return false;
     }
+
     private static boolean matchVehicleID(String ID){
         for (Vehicle vehicle: new Vehicle().getAllVehicles()){
             if (vehicle.getId().equals(ID)){
@@ -47,6 +49,7 @@ public class PortManagementSystem {
         }
         return false;
     }
+
     private static boolean matchContainerID(String ID){
         for (Container container: new Container().getAllContainer()){
             if (container.getId().equals(ID)){
@@ -150,26 +153,30 @@ public class PortManagementSystem {
         }
     }
 
+    private static Vehicle crudVehicleCreate(VehicleType vehicleType, double maxFuel, double maxCarryCapacity, Port port) {
+        return new Vehicle(vehicleType, maxFuel, maxCarryCapacity, port.getId());
+    }
     private static void PortCRUD(User user) {
         if (user.isAdmin()) {
             System.out.println("""
                     [1] - Create
                     [2] - Update
                     [3] - Delete""");
-        }
-        System.out.println("Enter option: ");
-        String input = scanner.nextLine();
-        switch (input) {
-            case "1" -> PortCreate();
-            case "2" -> {
-                System.out.println("Enter the port ID you want to make change: ");
-                String portId = scanner.nextLine();
-                if (matchID(portId) == true) {
-                    PortUpdate(portId);
-                }
-            }
-            case "3" -> {
 
+            System.out.println("Enter option: ");
+            String input = scanner.nextLine();
+            switch (input) {
+                case "1" -> PortCreate();
+                case "2" -> {
+                    System.out.println("Enter the port ID you want to make change: ");
+                    String portId = scanner.nextLine();
+                    if (matchID(portId) == true) {
+                        PortUpdate(portId);
+                    }
+                }
+                case "3" -> {
+
+                }
             }
         }
     }
@@ -435,7 +442,7 @@ public class PortManagementSystem {
             case "1" -> type = ContainerType.DRY_STORAGE;
             case "2" -> type = ContainerType.OPEN_TOP;
             case "3" -> type = ContainerType.OPEN_SIDE;
-            case "4" -> type = ContainerType.OPEN_TOP;
+            case "4" -> type = ContainerType.REFRIGERATED;
             case "5" -> type = ContainerType.LIQUID;
             default -> System.out.println("Invalid input");
         }
@@ -491,45 +498,8 @@ public class PortManagementSystem {
 //        crudVehicleCreate(/*input here*/);
 //    }
 
-//    private static void displayMenuLayer2(User user, String string) {
-//        switch (string) {
-//            case "1" -> {
-//                if (user.isAdmin()) {
-//
-//                }
-//            }
-//
-//            case "2" -> {
-//
-//            }
-//
-//            case "3" -> {
-//
-//            }
-//        }
-//    }
-
     public static void demo() {
-        Port assignedPort = new Port(
-                "Sample Port",
-                0,
-                0,
-                100,
-                true
-        );
-
-        Vehicle vehicle = new Vehicle(VehicleType.TRUCK, 100.0, 200.0, assignedPort.getId());
-
-        Container container1 = new Container(ContainerType.DRY_STORAGE, 10);
-        Container container2 = new Container(ContainerType.OPEN_TOP, 50);
-
-        vehicle.loadContainer(container2);
-
-        assignedPort.getContainers().add(container1);
-        assignedPort.getVehicles().add(vehicle);
-
-        User portManager_ = new User("manager", "pass").setAsManager(assignedPort);
-        User admin_ = new User("admin", "pass").setAsAdmin();
+        fileIO.generateMockData();
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         do {
             User user = login();
