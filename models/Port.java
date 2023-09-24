@@ -13,7 +13,7 @@ public class Port {
     /**
      * An {@link java.util.ArrayList ArrayList} of Port objects used as a record of every object that is alive
      */
-    public static ArrayList<Port> ports = new ArrayList<>();
+    private static ArrayList<Port> ports = new ArrayList<>();
 
     private String id;
     private String name;
@@ -118,6 +118,21 @@ public class Port {
     }
     protected boolean setIsLanding(Boolean isLanding){return this.isLanding = isLanding;}
 
+    public ArrayList<String> getVehicleIds() {
+        return vehicleIds;
+    }
+
+    public ArrayList<String> getContainerIds() {
+        return containerIds;
+    }
+
+    public ArrayList<String> getOngoingTrafficIds() {
+        return ongoingTrafficIds;
+    }
+
+    public ArrayList<String> getPastTrafficIds() {
+        return pastTrafficIds;
+    }
 
     public ArrayList<Vehicle> getVehicles() {
         ArrayList<Vehicle> vehicles = new ArrayList<>();
@@ -175,7 +190,7 @@ public class Port {
         return null;
     }
 
-    public static Port findPortById(String id) {
+    public Port findPortById(String id) {
         for (Port port : ports) {
             if (id.equals(port.getId())) return port;
         }

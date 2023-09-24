@@ -3,14 +3,529 @@ import utils.ContainerType;
 import utils.CustomUtils;
 import utils.VehicleType;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
-import static models.Port.ports;
+//import static models.Port.ports;
 
 public class PortManagementSystem {
     private static final Scanner scanner = new Scanner(System.in);
-    private static FileIO fileIO = new FileIO();
+    private static final FileIO fileIO = new FileIO();
+
+
+    private static void portCreate() {
+        System.out.println("Enter name: ");
+        String name = scanner.nextLine();
+
+        System.out.println("Enter latitude: ");
+        String latitude = scanner.nextLine();
+
+        double Latitude = 0.0;
+
+        if (CustomUtils.isDouble(latitude)){
+            Latitude = Double.parseDouble(latitude);
+        } else {
+            System.out.println("Invalid input");
+        }
+
+        System.out.println("Enter longitude: ");
+        String longitude = scanner.nextLine();
+
+        double Longitude = 0.0;
+
+        if (CustomUtils.isDouble(longitude)){
+            Longitude = Double.parseDouble(longitude);
+        } else {
+            System.out.println("Invalid input");
+        }
+
+        System.out.println("Enter max capacity: ");
+        String maxCap = scanner.nextLine();
+
+        double MaxCap = 0.0;
+
+        if (CustomUtils.isDouble(maxCap)){
+            MaxCap = Double.parseDouble(maxCap);
+        } else {
+            System.out.println("Invalid input");
+        }
+
+        System.out.println("Enter is landing ([true] / [false]): ");
+        String isLanding = scanner.nextLine();
+
+        boolean IsLanding = false;
+
+        if (CustomUtils.isBoolean(isLanding)) {
+            IsLanding = Boolean.parseBoolean(isLanding);
+        } else {
+            System.out.println("Invalid input");
+        }
+
+        new Port(name, Longitude, Latitude, MaxCap, IsLanding);
+    }
+
+    private static void portUpdate(String id) {
+        Port updatePort = new Port().findPortById(id);
+
+        if (updatePort == null) {
+            System.out.println("Port not found with ID: " + id);
+            return;
+        }
+
+        System.out.println("Enter name: ");
+        String name = scanner.nextLine();
+
+        System.out.println("Enter latitude: ");
+        String latitude = scanner.nextLine();
+        if (!CustomUtils.isDouble(latitude)){
+            System.out.println("Invalid input, please try again...");
+            return;
+        }
+
+        System.out.println("Enter longitude: ");
+        String longitude = scanner.nextLine();
+        if (!CustomUtils.isDouble(longitude)){
+            System.out.println("Invalid input, please try again...");
+            return;
+        }
+
+        System.out.println("Enter max capacity: ");
+        String maxCap = scanner.nextLine();
+        if (!CustomUtils.isDouble(maxCap)){
+            System.out.println("Invalid input, please try again...");
+            return;
+        }
+
+        System.out.println("Enter is landing: ");
+        String isLanding = scanner.nextLine();
+        if (!CustomUtils.isBoolean(isLanding)) {
+            System.out.println("Invalid input, please try again...");
+            return;
+        }
+
+        updatePort.setName(name);
+        updatePort.setLatitude(Double.valueOf(latitude));
+        updatePort.setLongitude(Double.valueOf(longitude));
+        updatePort.setMaxCapacity(Double.valueOf(maxCap));
+        updatePort.setIsLanding(Boolean.parseBoolean(isLanding));
+    }
+
+    private static void portDelete(String id) {
+        Port portToDelete = new Port().findPortById(id);
+
+        if (portToDelete == null) {
+            System.out.println("Port not found with ID: " + id);
+            return;
+        }
+
+        System.out.println("Are you sure you want to delete this port? ([yes] / [no])");
+        System.out.println(portToDelete.toStringSaveFileFormat());
+        String confirmation = scanner.nextLine().toLowerCase();
+
+        if (confirmation.equals("no")) {
+            System.out.println("Deletion canceled.");
+            return;
+        }
+
+        if (confirmation.equals("yes")) {
+            if (portToDelete.getContainers().size() > 0 || portToDelete.getVehicles().size() > 0) {
+                System.out.println("Deletion canceled. Port still has containers and vehicle in operations!");
+                return;
+            }
+
+            new Port().getAllPorts().remove(portToDelete);
+            System.out.println("Port deleted successfully.");
+            return;
+        }
+
+        System.out.println("Invalid input! Deletion canceled");
+    }
+
+    private static void portCRUD(User user) {
+        if (user.isAdmin()) {
+            System.out.println("""
+                    [1] - Create
+                    [2] - Update
+                    [3] - Delete
+                    [0] - Quit""");
+
+            System.out.println("Enter option: ");
+            String input = scanner.nextLine();
+
+            switch (input) {
+                case "0" -> {}
+
+                case "1" -> portCreate();
+
+                case "2" -> {
+                    System.out.println("Enter the port ID you want to make change: ");
+                    String portId = scanner.nextLine();
+                    portUpdate(portId);
+                }
+
+                case "3" -> {
+                    System.out.println("Enter the port ID you want to delete: ");
+                    String portId = scanner.nextLine();
+                    portDelete(portId);
+                }
+
+                default -> System.out.println("Error! Invalid input option.");
+            }
+        }
+    }
+
+
+    private static VehicleType getVehicleType(String input) {
+        if (input.equals("1")) return VehicleType.SHIP;
+        if (input.equals("2")) return VehicleType.TRUCK;
+        if (input.equals("3")) return VehicleType.REEFER_TRUCK;
+        if (input.equals("4")) return VehicleType.TANKER_TRUCK;
+        return null;
+    }
+
+    private static void vehicleCreate(User user) {
+        System.out.println("[1] - Ship");
+        System.out.println("[2] - Truck");
+        System.out.println("[3] - Refrigerated Truck");
+        System.out.println("[4] - Tanker Truck");
+
+        System.out.println("Enter vehicle choice: ");
+
+        VehicleType type = getVehicleType(scanner.nextLine());
+
+        if (type == null) {
+            System.out.println("Invalid input, please try again...");
+            return;
+        }
+
+        System.out.println("Enter max fuel: ");
+        String maxFuel = scanner.next();
+
+        if (!CustomUtils.isDouble(maxFuel)) {
+            System.out.println("Invalid input, please try again...");
+            return;
+        }
+
+        System.out.println("Enter max carry capacity: ");
+        String maxCarryCap = scanner.next();
+
+        if (CustomUtils.isDouble(maxCarryCap)){
+            System.out.println("Invalid input, please try again...");
+            return;
+        }
+
+        if (user.isAdmin()) {
+            displayPort(user);
+
+            System.out.println("Enter port ID: ");
+            String portId = scanner.next();
+
+            if (new Port().findPortById(portId) == null) {
+                System.out.println("Invalid input, please try again...");
+                return;
+            }
+
+            new Vehicle(type, Double.parseDouble(maxFuel), Double.parseDouble(maxCarryCap), portId);
+        } else {
+            new Vehicle(type, Double.parseDouble(maxFuel), Double.parseDouble(maxCarryCap), user.getManagingPort().getId());
+        }
+    }
+
+    private static void vehicleUpdate(String id, User user) {
+        Vehicle updateVehicle = user.isAdmin() ? new Vehicle().findVehicleById(id) : user.getManagingPort().findVehicleInPortById(id);
+
+        if (updateVehicle == null) {
+            System.out.println("Vehicle not found with ID: " + id);
+            return;
+        }
+
+        System.out.println("[1] - Ship");
+        System.out.println("[2] - Truck");
+        System.out.println("[3] - Refrigerated Truck");
+        System.out.println("[4] - Tanker Truck");
+
+        System.out.println("Enter vehicle choice: ");
+        VehicleType type = getVehicleType(scanner.nextLine());
+
+
+        System.out.println("Enter max fuel: ");
+        String maxFuel = scanner.next();
+        if (!CustomUtils.isDouble(maxFuel)){
+            System.out.println("Invalid input, please try again...");
+            return;
+        }
+        if (updateVehicle.getFuelCapacity() > Double.parseDouble(maxFuel)) {
+            System.out.println("Invalid input: the current value is higher then the inputted, please try again...");
+            return;
+        }
+
+
+        System.out.println("Enter max carry capacity: ");
+        String maxCarryCap = scanner.next();
+        if (!CustomUtils.isDouble(maxCarryCap)){
+            System.out.println("Invalid input, please try again...");
+            return;
+        }
+        if (updateVehicle.getCarryingCapacity() > Double.parseDouble(maxCarryCap)) {
+            System.out.println("Invalid input: the current value is higher then the inputted, please try again...");
+            return;
+        }
+
+
+        if (user.isAdmin()) {
+            displayPort(user);
+
+            System.out.println("Enter port ID: ");
+            String portId = scanner.next();
+
+            if (new Port().findPortById(portId) != null) {
+                updateVehicle.setVehicleType(type);
+                updateVehicle.setMaxFuel(Double.parseDouble(maxFuel));
+                updateVehicle.setMaxCarryCapacity(Double.parseDouble(maxCarryCap));
+                updateVehicle.setCurrentPort(portId);
+            }
+        } else {
+            updateVehicle.setVehicleType(type);
+            updateVehicle.setMaxFuel(Double.parseDouble(maxFuel));
+            updateVehicle.setMaxCarryCapacity(Double.parseDouble(maxCarryCap));
+            updateVehicle.setCurrentPort(user.getManagingPort().getId());
+        }
+    }
+
+    private static void vehicleDelete(String id, User user) {
+        Vehicle vehicleToDelete = user.isAdmin() ? new Vehicle().findVehicleById(id) : user.getManagingPort().findVehicleInPortById(id);
+
+        if (vehicleToDelete == null) {
+            System.out.println("Vehicle not found with ID: " + id);
+            return;
+        }
+
+        System.out.println("Are you sure you want to delete this vehicle? ([yes] / [no])");
+        System.out.println(vehicleToDelete.toStringSaveFileFormat());
+        String confirmation = scanner.nextLine().toLowerCase();
+
+        if (confirmation.equals("no")) {
+            System.out.println("Deletion canceled.");
+            return;
+        }
+
+        if (confirmation.equals("yes")) {
+            if (vehicleToDelete.getLoadedContainerIds().size() > 0) {
+                System.out.println("Deletion canceled. Vehicle still has containers!");
+                return;
+            }
+
+            new Vehicle().getAllVehicles().remove(vehicleToDelete);
+            System.out.println("Vehicle deleted successfully.");
+            return;
+        }
+
+        System.out.println("Invalid input! Deletion canceled");
+    }
+
+    private static void vehicleCRUD(User user) {
+        System.out.println("""
+                        [1] - Create
+                        [2] - Update
+                        [3] - Delete
+                        [0] - Quit""");
+
+        System.out.println("Enter option: ");
+        String input = scanner.nextLine();
+
+        switch (input) {
+            case "0" -> {}
+
+            case "1" -> vehicleCreate(user);
+
+            case "2" -> {
+                System.out.println("Enter the vehicle ID you want to make change: ");
+                String vehicleId = scanner.nextLine();
+                vehicleUpdate(vehicleId, user);
+
+            }
+
+            case "3" -> {
+                System.out.println("Enter the vehicle ID you want to delete: ");
+                String vehicleId = scanner.nextLine();
+                vehicleDelete(vehicleId, user);
+            }
+
+            default -> System.out.println("Error! Invalid input option.");
+        }
+    }
+
+
+    private static ContainerType getContainerType(String input) {
+        if (input.equals("1")) return ContainerType.DRY_STORAGE;
+        if (input.equals("2")) return ContainerType.OPEN_TOP;
+        if (input.equals("3")) return ContainerType.OPEN_SIDE;
+        if (input.equals("4")) return ContainerType.REFRIGERATED;
+        if (input.equals("5")) return ContainerType.LIQUID;
+        return null;
+    }
+
+    private static void containerCreate(User user) {
+        System.out.println("[1] - DRY STORAGE");
+        System.out.println("[2] - OPEN TOP");
+        System.out.println("[3] - OPEN SIDE");
+        System.out.println("[4] - REFRIGERATED");
+        System.out.println("[5] - LIQUID");
+
+        System.out.println("Enter vehicle choice: ");
+        ContainerType type = getContainerType(scanner.nextLine());
+        if (type == null) {
+            System.out.println("Invalid input, please try again...");
+            return;
+        }
+
+
+        System.out.println("Enter the weight: ");
+        String weight = scanner.nextLine();
+        if (!CustomUtils.isDouble(weight)){
+            System.out.println("Invalid input, please try again...");
+            return;
+        }
+
+        if (user.isAdmin()){
+            displayPort(user);
+
+            System.out.println("Enter port ID: ");
+            String portId = scanner.next();
+
+            Port port = new Port().findPortById(portId);
+            if (port == null){
+                System.out.println("Invalid input, please try again...");
+                return;
+            }
+
+            port.addContainerToPort(new Container(type, Double.parseDouble(weight)).getId());
+        } else {
+            user.getManagingPort().addContainerToPort(new Container(type, Double.parseDouble(weight)).getId());
+        }
+    }
+
+    private static void containerUpdate(String id, User user) {
+        Container updateContainer = user.isAdmin() ? new Container().findContainerById(id) : user.getManagingPort().findContainerInPortById(id);
+
+        if (updateContainer == null) {
+            System.out.println("Container not found with ID: " + id);
+            return;
+        }
+
+        System.out.println("[1] - DRY STORAGE");
+        System.out.println("[2] - OPEN TOP");
+        System.out.println("[3] - OPEN SIDE");
+        System.out.println("[4] - REFRIGERATED");
+        System.out.println("[5] - LIQUID");
+
+        System.out.println("Enter vehicle choice: ");
+        String input = scanner.nextLine();
+
+        ContainerType type = getContainerType(input);
+        if (type == null) {
+            System.out.println("Invalid input, please try again...");
+            return;
+        }
+
+        System.out.println("Enter the weight: ");
+        String weight = scanner.nextLine();
+
+        if (!CustomUtils.isDouble(weight)){
+            System.out.println("Invalid input, please try again...");
+            return;
+        }
+        updateContainer.setContainerType(type);
+        updateContainer.setWeight(Double.parseDouble(weight));
+    }
+
+    private static void containerDelete(String id, User user) {
+        Container containerToDelete = user.isAdmin() ? new Container().findContainerById(id) : user.getManagingPort().findContainerInPortById(id);
+        Vehicle vehicle = new Vehicle();
+        boolean inVehicle = false;
+
+        if (!user.isAdmin()) {
+            for (Vehicle v : user.getManagingPort().getVehicles()) {
+                if (v.getLoadedContainerIds().contains(id)) {
+                    containerToDelete = new Container().findContainerById(id);
+                    vehicle = v;
+                    inVehicle = true;
+                }
+            }
+        }
+
+        if (containerToDelete == null) {
+            System.out.println("Container not found with ID: " + id);
+            return;
+        }
+
+        System.out.println("Are you sure you want to delete this container? ([yes] / [no])");
+        System.out.println(containerToDelete.toStringSaveFileFormat());
+        String confirmation = scanner.nextLine().toLowerCase();
+
+        if (confirmation.equals("no")) {
+            System.out.println("Deletion canceled.");
+            return;
+        }
+
+        if (confirmation.equals("yes")) {
+            if (inVehicle) {
+                vehicle.getLoadedContainerIds().remove(containerToDelete.getId());
+                new Container().getAllContainer().remove(containerToDelete);
+                System.out.println("Container deleted successfully.");
+                return;
+            }
+
+            if (user.isAdmin()) {
+                for (User user_ : new User().getAllUsers()) {
+                    if (!user_.isAdmin()) user_.getManagingPort().getContainerIds().remove(containerToDelete.getId());
+                }
+
+                new Container().getAllContainer().remove(containerToDelete);
+                System.out.println("Container deleted successfully.");
+                return;
+            }
+
+            user.getManagingPort().getContainerIds().remove(containerToDelete.getId());
+            new Container().getAllContainer().remove(containerToDelete);
+            System.out.println("Container deleted successfully.");
+            return;
+        }
+
+        System.out.println("Invalid input! Deletion canceled");
+    }
+
+    private static void containerCRUD(User user) {
+    System.out.println("""
+                [1] - Create
+                [2] - Update
+                [3] - Delete
+                [0] - Quit""");
+    System.out.println("Enter option: ");
+    String input = scanner.nextLine();
+
+    switch (input) {
+        case "0" -> {}
+
+        case "1" -> containerCreate(user);
+
+        case "2" -> {
+            System.out.println("Enter the container ID you want to make change: ");
+            String containerId = scanner.nextLine();
+            containerUpdate(containerId, user);
+        }
+
+        case "3" -> {
+            System.out.println("Enter the container ID you want to delete: ");
+            String containerId = scanner.nextLine();
+            containerDelete(containerId, user);
+        }
+
+        default -> System.out.println("Error! Invalid input option.");
+    }
+}
+
+
+
 
     private static User login() {
         CustomUtils.breakLn(5);
@@ -30,36 +545,6 @@ public class PortManagementSystem {
             return true;
         }
 
-        return false;
-    }
-
-    private static boolean matchID(String ID){
-        for (Port port: new Port().getAllPorts()){
-            if (port.getId().equals(ID)){
-                return true;
-            }
-            return false;
-        }
-        return false;
-    }
-
-    private static boolean matchVehicleID(String ID){
-        for (Vehicle vehicle: new Vehicle().getAllVehicles()){
-            if (vehicle.getId().equals(ID)){
-                return true;
-            }
-            return false;
-        }
-        return false;
-    }
-
-    private static boolean matchContainerID(String ID){
-        for (Container container: new Container().getAllContainer()){
-            if (container.getId().equals(ID)){
-                return true;
-            }
-            return false;
-        }
         return false;
     }
 
@@ -138,400 +623,34 @@ public class PortManagementSystem {
 
     private static void displayResponseLayer0(User user, String string) {
         CustomUtils.breakLn(5);
+
         switch (string) {
             case "1" -> {
                 displayPort(user);
-                PortCRUD(user);
+                portCRUD(user);
             }
+
             case "2" -> {
                 displayContainer(user);
-                ContainerCRUD(user);
+                containerCRUD(user);
             }
+
             case "3" -> {
                 displayVehicle(user);
-                VehicleCRUD(user);
+                vehicleCRUD(user);
             }
-            case "4" -> displayUser(user);
+
+            case "4" -> {
+                displayUser(user);
+            }
+
             default -> System.out.println("Error! Undefined option.");
         }
     }
 
-    private static Vehicle crudVehicleCreate(VehicleType vehicleType, double maxFuel, double maxCarryCapacity, Port port) {
-        return new Vehicle(vehicleType, maxFuel, maxCarryCapacity, port.getId());
-    }
-    private static void PortCRUD(User user) {
-        if (user.isAdmin()) {
-            System.out.println("""
-                    [1] - Create
-                    [2] - Update
-                    [3] - Delete""");
-
-            System.out.println("Enter option: ");
-            String input = scanner.nextLine();
-            switch (input) {
-                case "1" -> PortCreate();
-                case "2" -> {
-                    System.out.println("Enter the port ID you want to make change: ");
-                    String portId = scanner.nextLine();
-                    if (matchID(portId) == true) {
-                        PortUpdate(portId);
-                    }
-                }
-                case "3" -> {
-                    System.out.println("Enter the port ID you want to delete: ");
-                    String portId = scanner.nextLine();
-                    if (matchID(portId)) {
-                        PortDelete(portId);
-                    } else {
-                        System.out.println("Port not found with ID: " + portId);
-                    }
-                }
-            }
-            }
-        }
-
-
-        private static void PortCreate(){
-            System.out.println("Enter name: ");
-            String name = scanner.nextLine();
-            System.out.println("Enter latitude: ");
-            String latitude = scanner.nextLine();
-            Double Latitude = 0.0;
-            if (CustomUtils.isDouble(latitude)){
-                Latitude = Double.valueOf(latitude);
-            }else{
-                System.out.println("Invalid input");
-            }
-            System.out.println("Enter longitude: ");
-            String longitude = scanner.nextLine();
-            Double Longitude = 0.0;
-            if (CustomUtils.isDouble(longitude)){
-                Longitude = Double.valueOf(longitude);
-            }else{
-                System.out.println("Invalid input");
-            }
-            System.out.println("Enter max capacity: ");
-            String maxCap = scanner.nextLine();
-            Double MaxCap = 0.0;
-            if (CustomUtils.isDouble(maxCap)){
-                MaxCap = Double.valueOf(maxCap);
-            }else{
-                System.out.println("Invalid input");
-            }System.out.println("Enter is landing: ");
-            String isLanding = scanner.nextLine();
-            Boolean IsLanding = false;
-            if (CustomUtils.isBoolean(isLanding)) {
-                IsLanding = Boolean.parseBoolean(isLanding);
-            }else{
-                System.out.println("Invalid input");
-            }
-            Port newPort = new Port(name, Longitude, Latitude, MaxCap, IsLanding);
-        }
-
-        private static void PortUpdate(String ID){
-            Port updatePort = new Port().findPortById(ID);
-            System.out.println("Enter name: ");
-            String name = scanner.nextLine();
-            updatePort.setName(name);
-            System.out.println("Enter latitude: ");
-            String latitude = scanner.nextLine();
-            if (CustomUtils.isDouble(latitude)){
-                Double Latitude = Double.valueOf(latitude);
-                updatePort.setLatitude(Latitude);
-            }else{
-                System.out.println("Invalid input");
-            }
-            System.out.println("Enter longitude: ");
-            String longitude = scanner.nextLine();
-            if (CustomUtils.isDouble(longitude)){
-                Double Longitude = Double.valueOf(longitude);
-                updatePort.setLongitude(Longitude);
-            }else{
-                System.out.println("Invalid input");
-            }
-            System.out.println("Enter max capacity: ");
-            String maxCap = scanner.nextLine();
-            if (CustomUtils.isDouble(maxCap)){
-                Double MaxCap = Double.valueOf(maxCap);
-                updatePort.setMaxCapacity(MaxCap);
-            }else{
-                System.out.println("Invalid input");
-            }System.out.println("Enter is landing: ");
-            String isLanding = scanner.nextLine();
-            if (CustomUtils.isBoolean(isLanding)) {
-                Boolean IsLanding = Boolean.parseBoolean(isLanding);
-                updatePort.setIsLanding(IsLanding);
-            }else{
-                System.out.println("Invalid input");
-            }
-        }
-
-    private static void PortDelete(String ID) {
-        Port portToDelete = new Port().findPortById(ID);
-
-        if (portToDelete != null) {
-            System.out.println("Are you sure you want to delete this port? (yes/no)");
-            String confirmation = scanner.nextLine().toLowerCase();
-            if (confirmation.equals("yes")) {
-                ports.remove(portToDelete);
-                System.out.println("Port deleted successfully.");
-            } else {
-                System.out.println("Deletion canceled.");
-            }
-        } else {
-            System.out.println("Port not found with ID: " + ID);
-        }
-    }
-
-
-
-
-
-
-
-
-
-    private static void VehicleCRUD(User user){
-        System.out.println("""
-                    [1] - Create
-                    [2] - Update
-                    [3] - Delete""");
-        System.out.println("Enter option: ");
-        String input = scanner.nextLine();
-        switch (input) {
-            case "1" -> VehicleCreate(user);
-            case "2" -> {
-                System.out.println("Enter the vehicle ID you want to make change: ");
-                String vehicleId = scanner.nextLine();
-                if (matchVehicleID(vehicleId) == true) {
-                    VehicleUpdate(vehicleId, user);
-                }
-            }
-            case "3" -> {
-
-            }
-        }
-    }
-
-    private static Vehicle VehicleCreate(User user){
-        Vehicle newVehicle;
-        System.out.println("[1] - Ship");
-        System.out.println("[2] - Truck");
-        System.out.println("[3] - Refridgerated Truck");
-        System.out.println("[4] - Tanker Truck");
-        System.out.println("Enter vehicle choice: ");
-        String input = scanner.nextLine();
-        VehicleType type = VehicleType.TRUCK;
-        switch (input){
-            case "1" -> type = VehicleType.SHIP;
-            case "2" -> type = VehicleType.TRUCK;
-            case "3" -> type = VehicleType.REEFER_TRUCK;
-            case "4" -> type = VehicleType.TANKER_TRUCK;
-            default -> System.out.println("Invalid input");
-        }
-        System.out.println("Enter max fuel: ");
-        String maxFuel = scanner.next();
-        Double MaxFuel = null;
-        Double MaxCarryCap = null;
-        Port Port;
-        if (CustomUtils.isDouble(maxFuel)){
-            MaxFuel = Double.valueOf(maxFuel);
-        }else{
-            System.out.println("Invalid input");
-        }
-        System.out.println("Enter max carry capacity: ");
-        String maxCarryCap = scanner.next();
-        if (CustomUtils.isDouble(maxCarryCap)){
-            MaxCarryCap = Double.valueOf(maxCarryCap);
-        }else{
-            System.out.println("Invalid input");
-        }
-        if (user.isAdmin()){
-            displayPort(user);
-            System.out.println("Enter port ID: ");
-            String portId = scanner.next();
-            if (matchID(portId) == true){
-                newVehicle = new Vehicle(type, MaxFuel, MaxCarryCap, portId);
-            }
-        }
-        return newVehicle = new Vehicle(type, MaxFuel, MaxCarryCap, user.getManagingPort().getId());
-    }
-    private static Vehicle VehicleUpdate(String ID, User user){
-        Vehicle updateVehicle = new Vehicle().findVehicleById(ID);
-        System.out.println("[1] - Ship");
-        System.out.println("[2] - Truck");
-        System.out.println("[3] - Refridgerated Truck");
-        System.out.println("[4] - Tanker Truck");
-        System.out.println("Enter vehicle choice: ");
-        String input = scanner.nextLine();
-        VehicleType type = VehicleType.TRUCK;
-        switch (input){
-            case "1" -> type = VehicleType.SHIP;
-            case "2" -> type = VehicleType.TRUCK;
-            case "3" -> type = VehicleType.REEFER_TRUCK;
-            case "4" -> type = VehicleType.TANKER_TRUCK;
-            default -> System.out.println("Invalid input");
-        }
-        updateVehicle.setVehicleType(type);
-        System.out.println("Enter max fuel: ");
-        String maxFuel = scanner.next();
-        Double MaxFuel = null;
-        Double MaxCarryCap = null;
-        Port Port;
-        if (CustomUtils.isDouble(maxFuel)){
-            MaxFuel = Double.valueOf(maxFuel);
-            updateVehicle.setMaxFuel(MaxFuel);
-        }else{
-            System.out.println("Invalid input");
-        }
-        System.out.println("Enter max carry capacity: ");
-        String maxCarryCap = scanner.next();
-        if (CustomUtils.isDouble(maxCarryCap)){
-            MaxCarryCap = Double.valueOf(maxCarryCap);
-            updateVehicle.setMaxCarryCapacity(MaxCarryCap);
-        }else{
-            System.out.println("Invalid input");
-        }
-        if (user.isAdmin()){
-            displayPort(user);
-            System.out.println("Enter port ID: ");
-            String portId = scanner.next();
-            if (matchID(portId) == true){
-                updateVehicle = new Vehicle(type, MaxFuel, MaxCarryCap, portId);
-            }
-        }
-        return updateVehicle;
-    }
-//    private static Vehicle VehicleDelete(User user){}
-    private static void ContainerCRUD (User user) {
-        System.out.println("""
-                [1] - Create
-                [2] - Update
-                [3] - Delete""");
-        System.out.println("Enter option: ");
-        String input = scanner.nextLine();
-        switch (input) {
-            case "1" -> ContainerCreate(user);
-            case "2" -> {
-                System.out.println("Enter the container ID you want to make change: ");
-                String containerId = scanner.nextLine();
-                if (matchContainerID(containerId) == true) {
-                    ContainerUpdate(containerId);
-                }
-            }
-            case "3" -> {
-
-            }
-        }
-    }
-
-    private static Container ContainerCreate(User user){
-        Container newContainer;
-        System.out.println("[1] - DRY STORAGE");
-        System.out.println("[2] - OPEN TOP");
-        System.out.println("[3] - OPEN SIDE");
-        System.out.println("[4] - REFRIGERATED");
-        System.out.println("[5] - LIQUID");
-        String input = scanner.nextLine();
-        ContainerType type = ContainerType.DRY_STORAGE;
-        switch (input){
-            case "1" -> type = ContainerType.DRY_STORAGE;
-            case "2" -> type = ContainerType.OPEN_TOP;
-            case "3" -> type = ContainerType.OPEN_SIDE;
-            case "4" -> type = ContainerType.OPEN_TOP;
-            case "5" -> type = ContainerType.LIQUID;
-            default -> System.out.println("Invalid input");
-        }
-        System.out.println("Enter the weight: ");
-        String weight = scanner.nextLine();
-        Double Weight = 0.0;
-        if (CustomUtils.isDouble(weight)){
-            Weight = Double.valueOf(weight);
-        }else{
-            System.out.println("Invalid input");
-        }
-        if (user.isAdmin()){
-            displayPort(user);
-            System.out.println("Enter port ID: ");
-            String portId = scanner.next();
-            if (matchID(portId) == true){
-                newContainer = new Container(type, Weight);
-            }
-        }
-        return newContainer = new Container(type, Weight);
-    }
-    private static Container ContainerUpdate(String ID){
-        Container updateContainer = new Container().findContainerById(ID);
-        System.out.println("[1] - DRY STORAGE");
-        System.out.println("[2] - OPEN TOP");
-        System.out.println("[3] - OPEN SIDE");
-        System.out.println("[4] - REFRIGERATED");
-        System.out.println("[5] - LIQUID");
-        String input = scanner.nextLine();
-        ContainerType type = ContainerType.DRY_STORAGE;
-        switch (input){
-            case "1" -> type = ContainerType.DRY_STORAGE;
-            case "2" -> type = ContainerType.OPEN_TOP;
-            case "3" -> type = ContainerType.OPEN_SIDE;
-            case "4" -> type = ContainerType.REFRIGERATED;
-            case "5" -> type = ContainerType.LIQUID;
-            default -> System.out.println("Invalid input");
-        }
-        updateContainer.setContainerType(type);
-        System.out.println("Enter the weight: ");
-        String weight = scanner.nextLine();
-        Double Weight = 0.0;
-        if (CustomUtils.isDouble(weight)){
-            Weight = Double.valueOf(weight);
-        }else{
-            System.out.println("Invalid input");
-        }
-        updateContainer.setWeight(Weight);
-        return updateContainer;
-    }
-//    private static Container ContainerDelete(User user){}
-
-
-//    private static Vehicle crudVehicleCreate(VehicleType vehicleType, double maxFuel, double maxCarryCapacity, Port port) {
-//        return new Vehicle(vehicleType, maxFuel, maxCarryCapacity, port);
-//    }
-
-//    private static boolean crudVehicleUpdate(User user, String id) {
-//        // search for vehicle via id (depends on user.isAdmin())
-//        // ask what to me update
-//
-//        // vehicle type?
-//        //      => get input -> validate -> call setters -> return true if success
-//        // vehicle max fuel?
-//        //      => get input -> validate -> call setters -> return true if success
-//        // vehicle carry cap?
-//        //      => get input -> validate -> call setters -> return true if success
-//        // vehicle port?
-//        //      => get input -> validate -> call setters -> return true if success
-//
-//        // return false in case something is fucked...
-//    }
-//
-//    private static boolean crudVehicleDelete(User user, String id) {
-//        // search for vehicle via id (depends on user.isAdmin())
-//        // if the vehicle is traveling (the obj should be inside the Port.ongoingTrips) then ignore - cannot delete an ongoing trip
-//        // if manager -> search in port -> delete if found -> return true else false
-//        // if admin -> search for each port and find what port contains that vehicle
-//        // IMPORTANT: UNLOAD THE VEHICLE BEFORE DELETING
-//    }
-//
-//    private static void crudVehicle() {
-//        // print options
-//        // if create new vehicle
-//        // => get user input then validate
-//        // if not validate => do something (maybe ask to input again or throw error and return to home screen idk)
-//        // if validated information
-//        crudVehicleCreate(/*input here*/);
-//    }
-
     public static void demo() {
         fileIO.generateMockData();
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         do {
             User user = login();
             while (true) {
