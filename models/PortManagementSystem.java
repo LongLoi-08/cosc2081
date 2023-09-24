@@ -646,11 +646,6 @@ public class PortManagementSystem {
         switch (string) {
             case "1" -> {
                 displayPort(user);
-
-                if (user.isAdmin()) {
-                    System.out.println("View ");
-                }
-
                 portCRUD(user);
             }
 
