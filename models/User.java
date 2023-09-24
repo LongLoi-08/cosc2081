@@ -93,4 +93,16 @@ public class User {
                 username, password, isAdmin ? 1 : 0, portID
         );
     }
+
+    @Override
+    public String toString() {
+        return this.isAdmin ? "Admin{" +
+                "\n     username='" + username + '\'' +
+                ", \n     password='" + password + '\'' +
+                "\n}" : "Manager{" +
+                "\n     username='" + username + '\'' +
+                ", \n     password='" + password + '\'' +
+                ", \n     portID='" + portID + '\'' +
+                "\n}";
+    }
 }
