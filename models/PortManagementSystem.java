@@ -206,7 +206,7 @@ public class PortManagementSystem {
         System.out.println("Enter max carry capacity: ");
         String maxCarryCap = scanner.next();
 
-        if (CustomUtils.isDouble(maxCarryCap)){
+        if (!CustomUtils.isDouble(maxCarryCap)){
             System.out.println("Invalid input, please try again...");
             return;
         }
