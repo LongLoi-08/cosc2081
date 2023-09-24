@@ -111,6 +111,18 @@ public class TripDetails {
         );
     }
 
+    public String toStringDisplayFormat() {
+        return "TripDetails{" +
+                "\n     id='" + id + '\'' +
+                ", \n     departure=" + departure +
+                ", \n     arrival=" + arrival +
+                ", \n     vehicleId='" + vehicleId + '\'' +
+                ", \n     departurePortId='" + departurePortId + '\'' +
+                ", \n     arrivalPortId='" + arrivalPortId + '\'' +
+                ", \n     status='" + status + '\'' +
+                "\n}";
+    }
+
     @Override
     public String toString() {
         return id;

@@ -99,6 +99,14 @@ public class Container implements interfaces.Container {
         return String.format("%s|%s|%.2f", id, containerType.toString(), weight);
     }
 
+    public String toStringDisplayFormat() {
+        return "Container{" +
+                "\n     id='" + id + '\'' +
+                ", \n     containerType=" + containerType +
+                ", \n     weight=" + weight +
+                "\n}";
+    }
+
     @Override
     public String toString() {
         return id;

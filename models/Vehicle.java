@@ -19,7 +19,8 @@ public class Vehicle implements interfaces.Vehicle {
     private ArrayList<String> containerIds;
     private String currentPortId;
 
-    public Vehicle() {}
+    public Vehicle() {
+    }
 
     /**
      * For dev purpose only!
@@ -193,6 +194,19 @@ public class Vehicle implements interfaces.Vehicle {
                 "%s|%s|%.2f|%.2f|%.2f|%.2f|%s|%s",
                 id, vehicleType.toString(), maxFuel, currentFuel, maxCarryCapacity, currentCarryLoad, containerIds, currentPortId
         );
+    }
+
+    public String toStringDisplayFormat() {
+        return "Vehicle{" +
+                "\n     id='" + id + '\'' +
+                ", \n     vehicleType=" + vehicleType +
+                ", \n     maxFuel=" + maxFuel +
+                ", \n     currentFuel=" + currentFuel +
+                ", \n     maxCarryCapacity=" + maxCarryCapacity +
+                ", \n     currentCarryLoad=" + currentCarryLoad +
+                ", \n     containerIds=" + containerIds +
+                ", \n     currentPortId='" + currentPortId + '\'' +
+                "\n}";
     }
 
     @Override

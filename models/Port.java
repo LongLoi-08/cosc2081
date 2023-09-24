@@ -264,6 +264,21 @@ public class Port {
         );
     }
 
+    public String toStringDisplayFormat() {
+        return "Port{" +
+                "\n     id='" + id + '\'' +
+                ", \n     name='" + name + '\'' +
+                ", \n     xLatitude=" + xLatitude +
+                ", \n     yLongitude=" + yLongitude +
+                ", \n     maxCapacity=" + maxCapacity +
+                ", \n     isLanding=" + isLanding +
+                ", \n     vehicleIds=" + vehicleIds +
+                ", \n     containerIds=" + containerIds +
+                ", \n     ongoingTrafficIds=" + ongoingTrafficIds +
+                ", \n     pastTrafficIds=" + pastTrafficIds +
+                "\n}";
+    }
+
     @Override
     public String toString() {
         return id;
