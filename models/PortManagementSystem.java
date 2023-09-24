@@ -5,8 +5,6 @@ import utils.VehicleType;
 
 import java.util.Scanner;
 
-//import static models.Port.ports;
-
 public class PortManagementSystem {
     private static final Scanner scanner = new Scanner(System.in);
     private static final FileIO fileIO = new FileIO();
