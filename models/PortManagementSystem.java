@@ -170,6 +170,8 @@ public class PortManagementSystem {
 
                 default -> System.out.println("Error! Invalid input option.");
             }
+
+            fileIO.savePorts();
         }
     }
 
@@ -352,6 +354,8 @@ public class PortManagementSystem {
 
             default -> System.out.println("Error! Invalid input option.");
         }
+
+        fileIO.saveVehicles();
     }
 
 
@@ -495,34 +499,36 @@ public class PortManagementSystem {
     }
 
     private static void containerCRUD(User user) {
-    System.out.println("""
-                [1] - Create
-                [2] - Update
-                [3] - Delete
-                [0] - Quit""");
-    System.out.println("Enter option: ");
-    String input = scanner.nextLine();
+        System.out.println("""
+                    [1] - Create
+                    [2] - Update
+                    [3] - Delete
+                    [0] - Quit""");
+        System.out.println("Enter option: ");
+        String input = scanner.nextLine();
 
-    switch (input) {
-        case "0" -> {}
+        switch (input) {
+            case "0" -> {}
 
-        case "1" -> containerCreate(user);
+            case "1" -> containerCreate(user);
 
-        case "2" -> {
-            System.out.println("Enter the container ID you want to make change: ");
-            String containerId = scanner.nextLine();
-            containerUpdate(containerId, user);
+            case "2" -> {
+                System.out.println("Enter the container ID you want to make change: ");
+                String containerId = scanner.nextLine();
+                containerUpdate(containerId, user);
+            }
+
+            case "3" -> {
+                System.out.println("Enter the container ID you want to delete: ");
+                String containerId = scanner.nextLine();
+                containerDelete(containerId, user);
+            }
+
+            default -> System.out.println("Error! Invalid input option.");
         }
 
-        case "3" -> {
-            System.out.println("Enter the container ID you want to delete: ");
-            String containerId = scanner.nextLine();
-            containerDelete(containerId, user);
-        }
-
-        default -> System.out.println("Error! Invalid input option.");
+        fileIO.saveContainers();
     }
-}
 
 
 
@@ -585,6 +591,37 @@ public class PortManagementSystem {
         }
     }
 
+    private static void loadContainer(User user) {
+        for (Vehicle v : user.getManagingPort().getVehicles()) {
+            System.out.println(v.toStringDisplayFormat());
+        }
+
+        System.out.println("Enter a vehicleId: ");
+        String vehicleId = scanner.nextLine();
+        Vehicle vehicle = user.getManagingPort().findVehicleInPortById(vehicleId);
+        if (vehicle == null) {
+            System.out.println("Vehicle not found with ID: " + vehicleId);
+            return;
+        }
+
+        for (Container c : user.getManagingPort().getContainers()) {
+            System.out.println(c.toStringDisplayFormat());
+        }
+
+        System.out.println("Enter a containerId: ");
+        String containerId = scanner.nextLine();
+        Container container = user.getManagingPort().findContainerInPortById(containerId);
+        if (container == null) {
+            System.out.println("Container not found with ID: " + vehicleId);
+            return;
+        }
+
+        user.getManagingPort().loadContainerToVehicle(container, vehicle);
+
+        fileIO.saveVehicles();
+        fileIO.savePorts();
+    }
+
     private static void displayUser(User user) {
         if (user.isAdmin()) {
             for (User user_ : new User().getAllUsers()) {
@@ -615,6 +652,39 @@ public class PortManagementSystem {
         }
     }
 
+    private static void startTrips(User user) {
+        CustomUtils.breakLn(3);
+
+        for (Port p : new Port().getAllPorts()) {
+            System.out.println(p.toStringDisplayFormat());
+        }
+
+        System.out.println("Enter a portId: ");
+        String portId = scanner.nextLine();
+        Port port = new Port().findPortById(portId);
+        if (port == null) {
+            System.out.println("Port not found with ID: " + portId);
+            return;
+        }
+
+        for (Vehicle v : user.getManagingPort().getVehicles()) {
+            System.out.println(v.toStringDisplayFormat());
+        }
+
+        System.out.println("Enter a vehicleId: ");
+        String vehicleId = scanner.nextLine();
+        Vehicle vehicle = user.getManagingPort().findVehicleInPortById(vehicleId);
+        if (vehicle == null) {
+            System.out.println("Vehicle not found with ID: " + vehicleId);
+            return;
+        }
+
+        user.getManagingPort().startTrip(vehicle, port);
+
+        fileIO.saveTripDetails();
+        fileIO.savePorts();
+    }
+
     private static void displayMenuLayer0(User user) {
         CustomUtils.breakLn(5);
 
@@ -637,6 +707,8 @@ public class PortManagementSystem {
                 [3] - List all Port's Vehicles
                 [4] - View current User information
                 [5] - List all Port's TripDetails
+                [6] - Load container to vehicle
+                [7] - Start trips to other ports
                 [0] - Exit/Logout""");
     }
 
@@ -665,6 +737,23 @@ public class PortManagementSystem {
 
             case "5" -> {
                 displayTripDetails(user);
+
+            }
+
+            case "6" -> {
+                if (user.isAdmin()) {
+                    System.out.println("Error! Undefined option.");
+                } else {
+                    loadContainer(user);
+                }
+            }
+
+            case "7" -> {
+                if (user.isAdmin()) {
+                    System.out.println("Error! Undefined option.");
+                } else {
+                    startTrips(user);
+                }
             }
 
             default -> System.out.println("Error! Undefined option.");
