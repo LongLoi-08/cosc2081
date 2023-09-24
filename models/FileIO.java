@@ -148,9 +148,15 @@ public class FileIO {
                 String username = parts[0];
                 String password = parts[1];
                 boolean isAdmin = parts[2].equals("1");
-                String portId = parts[3];
+                String portId = null;
 
-                new User(username, password, isAdmin, portId);
+                if (!isAdmin) portId = parts[3];
+
+                if (isAdmin) {
+                    new User(username, password).setAsAdmin();
+                } else {
+                    new User(username, password).setAsManager(new Port().findPortById(portId));
+                }
             }
 
             return true;
@@ -234,15 +240,25 @@ public class FileIO {
 
                 ArrayList<String> vId = new ArrayList<>(Arrays.asList(parts[6].substring(1, parts[6].length() - 1).split(", ")));
                 ArrayList<String> cId = new ArrayList<>(Arrays.asList(parts[7].substring(1, parts[7].length() - 1).split(", ")));
-                ArrayList<String> oTDId = new ArrayList<>(Arrays.asList(parts[8].substring(2, parts[8].length() - 1).split(", ")));
-                ArrayList<String> pTDId = new ArrayList<>(Arrays.asList(parts[9].substring(2, parts[9].length() - 1).split(", ")));
+
+                ArrayList<String> oTDId = new ArrayList<>();
+                ArrayList<String> pTDId = new ArrayList<>();
+
+                if (parts[8].length() > 2 && parts[8] != null) {
+                    oTDId = new ArrayList<>(Arrays.asList(parts[8].substring(2, parts[8].length() - 1).split(", ")));
+                }
+                if (parts[9].length() > 2 && parts[9] != null) {
+                    pTDId = new ArrayList<>(Arrays.asList(parts[9].substring(2, parts[9].length() - 1).split(", ")));
+                }
 
                 // move the trips that finish to the past array
                 for (String id_ : oTDId) {
                     TripDetails tripDetails = new TripDetails().findTripDetailsById(id_);
-                    if (LocalDate.now().isAfter(tripDetails.getArrival())) {
-                        oTDId.remove(id_);
-                        pTDId.add(id_);
+                    if (tripDetails != null) {
+                        if (LocalDate.now().isAfter(tripDetails.getArrival())) {
+                            oTDId.remove(id_);
+                            pTDId.add(id_);
+                        }
                     }
                 }
 
@@ -281,7 +297,18 @@ public class FileIO {
                 String status = parts[6];
 
                 // only create if arrival is less than 7days
-                if (LocalDate.now().isBefore(arrival.plusDays(7))) new TripDetails(id, departure, arrival, vehicleId, departurePortId, arrivalPortId, status);
+                if (LocalDate.now().isBefore(arrival.plusDays(7)))
+                    if (LocalDate.now().isAfter(arrival)) {
+                        new TripDetails(id, departure, arrival, vehicleId, departurePortId, arrivalPortId, TripDetails.STATUS_ON_GOING);
+                        return true;
+                    }
+
+                    new TripDetails(id, departure, arrival, vehicleId, departurePortId, arrivalPortId, TripDetails.STATUS_DELIVERED)
+                            .getVehicle().setCurrentFuel(
+                                    new Vehicle().getCurrentFuel()
+                                    -
+                                    new Vehicle().getTotalFuelConsumptionRate() * new Port().findPortById(departurePortId).distanceTo(new Port().findPortById(arrivalPortId))
+                            );
             }
 
             return true;

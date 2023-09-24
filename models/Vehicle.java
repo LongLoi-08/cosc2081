@@ -189,6 +189,18 @@ public class Vehicle implements interfaces.Vehicle {
         return true;
     }
 
+    public  double getTotalFuelConsumptionRate() {
+        double rate = 0.0;
+        for (String id_ : this.getLoadedContainerIds()) {
+            if (this.getVehicleType().equals(VehicleType.SHIP)) {
+                rate += new Container().getContainerType().getFuelConsumptionTruck();
+            } else {
+                rate += new Container().getContainerType().getFuelConsumptionShip();
+            }
+        }
+        return rate;
+    }
+
     public String toStringSaveFileFormat() {
         return String.format(
                 "%s|%s|%.2f|%.2f|%.2f|%.2f|%s|%s",

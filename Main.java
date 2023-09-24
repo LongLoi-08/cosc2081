@@ -14,23 +14,17 @@ public class Main {
                 Instructor: Mr. Minh Vu & Dr. Phong Ngo
                 Group: 25
                 s3758273, Loi Gia Long
-                sXXXXXXX, Student Name
-                sXXXXXXX, Student Name
-                sXXXXXXX, Student Name
-                sXXXXXXX, Student Name
+                s3907087, Tran Khanh Duc
+                s3940677, Vu Phat Dai
+                s4021266, Muhammad Zainulabideen Noaman
+                s3939240, Nguyen Kim Anh
                 """);
     }
     public static void sysInit() {
         showCredits();
-
-        // main system implementation should be here
-
+        PortManagementSystem.demo(false);
     }
     public static void main(String[] args) {
-//        sysInit();
-        PortManagementSystem.demo();
-
-//        System.out.println(LocalDate.parse("2023-09-21").toString());
-//        System.out.println(LocalDate.parse("2023-09-21").compareTo(LocalDate.parse("2023-09-14")));
+        sysInit();
     }
 }
