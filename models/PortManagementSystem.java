@@ -5,8 +5,6 @@ import utils.VehicleType;
 
 import java.util.Scanner;
 
-//import static models.Port.ports;
-
 public class PortManagementSystem {
     private static final Scanner scanner = new Scanner(System.in);
     private static final FileIO fileIO = new FileIO();
@@ -529,63 +527,43 @@ public class PortManagementSystem {
 
     }
 
-    private static void userCRUD(User user) {
-        if(user.isAdmin() == true){
-            System.out.println("""
-                [1] - Create
-                [2] - Update
-                [3] - Delete
-                [0] - Quit""");
-            System.out.println("Enter option: ");
-            String input = scanner.nextLine();
-            switch (input) {
-                case "0" -> {
-                }
-
-                case "1" -> createUser(user);
-
-                case "2" -> {
-                    updateUser(user);
-                }
-
-                case "3" -> {
-                    deleteUser(user);
-                }
-
-                default -> System.out.println("Error! Invalid input option.");
-            }
-        }else {
-            System.out.println("Do you want to change password? (Y/N)");
-            String input = scanner.nextLine().toLowerCase();
-            switch (input){
-                case "y" -> updateUser(user);
-                case "n" -> displayUser(user);
-                default -> System.out.println("Invalid input!");
-            }
-        }
-    }
 
     private static void createUser(User user) {
-        System.out.println("Enter new manager name: ");
-        String name = scanner.nextLine();
-        System.out.println("Enter password: ");
-        String pass = scanner.nextLine();
-        displayPort(user);
-        System.out.println("Choose the designated port ID: ");
-        String portId = scanner.nextLine();
-        Port assignedPort= new Port();
-        if (new Port().findPortById(portId) != null){
-            assignedPort = new Port().findPortById(portId);
-        }else{
-            System.out.println("Invalid port ID!");
-        }
         System.out.println("[1] - make manager");
         System.out.println("[2] - make administrator");
         String input = scanner.nextLine();
-        User addNew;
+
         switch (input){
-            case "1" -> addNew = new User(name, pass).setAsManager(assignedPort);
-            case "2" -> addNew = new User(name ,pass).setAsAdmin();
+            case "1" -> {
+                System.out.println("Enter new manager username: ");
+                String username = scanner.nextLine();
+
+                System.out.println("Enter password: ");
+                String pass = scanner.nextLine();
+
+                displayPort(user);
+                System.out.println("Choose the designated port ID: ");
+                String portId = scanner.nextLine();
+
+                Port assignedPort = new Port().findPortById(portId);
+                if (assignedPort == null) {
+                    System.out.println("Port not found with ID: " + portId);
+                    return;
+                }
+
+                new User(username, pass).setAsManager(assignedPort);
+            }
+
+            case "2" -> {
+                System.out.println("Enter new manager username: ");
+                String username = scanner.nextLine();
+
+                System.out.println("Enter password: ");
+                String pass = scanner.nextLine();
+
+                new User(username, pass).setAsAdmin();
+            }
+
             default -> System.out.println("Invalid input!");
         }
     }
@@ -594,25 +572,86 @@ public class PortManagementSystem {
         if(user.isAdmin()){
             System.out.print("Enter the username need modification: ");
             String input = scanner.nextLine();
-            User currentUser = new User().findUserByName(input);
-            if (currentUser != null){
-                System.out.println("Enter new manager name: ");
-                String newName = scanner.nextLine();
-                System.out.println("Enter new password: ");
-                String newPass = scanner.nextLine();
-                System.out.println("Enter assigned port ID: ");
-                String port = scanner.nextLine();
-                Port assignedPort = currentUser.getManagingPort();
-                if (new Port().findPortById(port) != null){
-                    assignedPort = new Port().findPortById(port);
-                }
-                User updateUser = new User().findUserByName(input);
-                updateUser.setUsername(newName);
-                updateUser.setPassword(newPass);
-                updateUser.setManagingPort(assignedPort);
-            } else {
+
+            User pendingUpdateUser = new User().findUserByName(input);
+            if (pendingUpdateUser == null){
                 System.out.print("Username not found!");
+                return;
             }
+
+            System.out.println("Enter new user name: ");
+            String newUsername = scanner.nextLine();
+
+            System.out.println("Enter new password: ");
+            String newPass = scanner.nextLine();
+
+            if (!pendingUpdateUser.isAdmin()) {
+                System.out.println("Change to admin? ([true] / [false]): ");
+                String isAdminS = scanner.nextLine();
+
+                if (!CustomUtils.isBoolean(isAdminS)) {
+                    System.out.println("Invalid input, please try again...");
+                    return;
+                }
+
+                boolean isAdmin = Boolean.parseBoolean(isAdminS);
+
+                if (isAdmin) {
+                    pendingUpdateUser.setUsername(newUsername);
+                    pendingUpdateUser.setPassword(newPass);
+                    pendingUpdateUser.setAdmin(true);
+                    pendingUpdateUser.setManagingPort(null);
+                    return;
+                }
+
+                displayPort(user);
+
+                System.out.println("Enter new port ID: ");
+                String portId = scanner.nextLine();
+
+                Port newPort = new Port().findPortById(portId);
+                if (newPort == null){
+                    System.out.println("Port not found with ID: " + portId);
+                    return;
+                }
+
+                pendingUpdateUser.setUsername(newUsername);
+                pendingUpdateUser.setPassword(newPass);
+                pendingUpdateUser.setManagingPort(newPort);
+                return;
+            }
+
+            System.out.println("Change to manager? ([true] / [false]): ");
+            String isManagerS = scanner.nextLine();
+
+            if (!CustomUtils.isBoolean(isManagerS)) {
+                System.out.println("Invalid input, please try again...");
+                return;
+            }
+
+            boolean isAdmin = !Boolean.parseBoolean(isManagerS);
+            if (isAdmin) {
+                pendingUpdateUser.setUsername(newUsername);
+                pendingUpdateUser.setPassword(newPass);
+                pendingUpdateUser.setAdmin(true);
+                pendingUpdateUser.setManagingPort(null);
+                return;
+            }
+
+            displayPort(user);
+
+            System.out.println("Enter new port ID: ");
+            String portId = scanner.nextLine();
+
+            Port newPort = new Port().findPortById(portId);
+            if (newPort == null){
+                System.out.println("Port not found with ID: " + portId);
+                return;
+            }
+
+            pendingUpdateUser.setUsername(newUsername);
+            pendingUpdateUser.setPassword(newPass);
+            pendingUpdateUser.setManagingPort(newPort);
         } else {
             System.out.println("Enter new password: ");
             String newPass = scanner.nextLine();
@@ -621,23 +660,56 @@ public class PortManagementSystem {
     }
 
     private static void deleteUser(User user){
+        System.out.println("Choose the username that needs removal: ");
+        String toDeleteName = scanner.nextLine();
+
+        User userToBeDelete = new User().findUserByName(toDeleteName);
+        if (userToBeDelete == null) {
+            System.out.print("Username not found!");
+            return;
+        }
+
+        new User().getAllUsers().remove(userToBeDelete);
+    }
+
+    private static void userCRUD(User user) {
         if(user.isAdmin()){
-            System.out.println("Choose the manager that needs removal: ");
-            String toDeleteName = scanner.nextLine();
-            if (new User().findUserByName(toDeleteName) != null){
-                User userNeedRemoval = new User().findUserByName(toDeleteName);
-                new User().getAllUsers().remove(userNeedRemoval);
-            } else {
-                System.out.println("The manager username entered not found!");
+            System.out.println("""
+                [1] - Create
+                [2] - Update
+                [3] - Delete
+                [0] - Quit""");
+
+            System.out.println("Enter option: ");
+            String input = scanner.nextLine();
+
+            switch (input) {
+                case "0" -> {}
+
+                case "1" -> createUser(user);
+
+                case "2" -> updateUser(user);
+
+                case "3" -> deleteUser(user);
+
+                default -> System.out.println("Error! Invalid input option.");
+            }
+        } else {
+            System.out.println("Do you want to change password? (Y/N)");
+            String input = scanner.nextLine().toLowerCase();
+            switch (input){
+                case "y" -> updateUser(user);
+                case "n" -> {}
+                default -> System.out.println("Invalid input!");
             }
         }
+
+        fileIO.saveUsers();
     }
 
 
 
     private static User login() {
-        CustomUtils.breakLn(5);
-
         System.out.print("Enter your username: ");
         String username = scanner.nextLine();
 
@@ -650,6 +722,11 @@ public class PortManagementSystem {
     private static boolean logout(User user, String input_) {
         if (input_.equals("0")) {
             user = null;
+            fileIO.saveUsers();
+            fileIO.savePorts();
+            fileIO.saveContainers();
+            fileIO.saveVehicles();
+            fileIO.saveTripDetails();
             return true;
         }
 
@@ -863,9 +940,16 @@ public class PortManagementSystem {
         }
     }
 
-    public static void demo() {
-        fileIO.generateMockData();
-
+    public static void demo(boolean loadDataFromFile) {
+        if (loadDataFromFile) {
+            fileIO.loadTripsDetailsFromFile();
+            fileIO.loadPortsFromFile();
+            fileIO.loadUsersFromFile();
+            fileIO.loadContainersFromFile();
+            fileIO.loadVehicleFromFile();
+        } else {
+            fileIO.generateMockData();
+        }
         do {
             User user = login();
             while (true) {

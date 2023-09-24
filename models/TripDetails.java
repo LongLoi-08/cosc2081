@@ -99,6 +99,10 @@ public class TripDetails {
         return status;
     }
 
+    protected void setStatus(String status) {
+        this.status = status;
+    }
+
     public TripDetails findTripDetailsById(String id) {
         for (TripDetails td : tripDetails) {
             if (td.getId().equals(id)) return td;
