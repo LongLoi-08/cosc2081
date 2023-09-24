@@ -53,6 +53,9 @@ public class TripDetails {
         this.arrivalPortId = arrivalPortId;
         this.status = STATUS_ON_GOING;
 
+        new Port().findPortById(departurePortId).addTripDetails(this.id);
+        new Port().findPortById(arrivalPortId).addTripDetails(this.id);
+
         tripDetails.add(this);
     }
 

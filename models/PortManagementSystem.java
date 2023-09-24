@@ -551,37 +551,37 @@ public class PortManagementSystem {
     private static void displayPort(User user) {
         if (user.isAdmin()) {
             for (Port port : new Port().getAllPorts()) {
-                System.out.println(port.toStringSaveFileFormat());
+                System.out.println(port.toStringDisplayFormat());
             }
             return;
         }
 
-        System.out.println(user.getManagingPort().toStringSaveFileFormat());
+        System.out.println(user.getManagingPort().toStringDisplayFormat());
     }
 
     private static void displayContainer(User user) {
         if (user.isAdmin()) {
             for (Container container : new Container().getAllContainer()) {
-                System.out.println(container.toStringSaveFileFormat());
+                System.out.println(container.toStringDisplayFormat());
             }
             return;
         }
 
         for (Container container : user.getManagingPort().getContainers()) {
-            System.out.println(container.toStringSaveFileFormat());
+            System.out.println(container.toStringDisplayFormat());
         }
     }
 
     private static void displayVehicle(User user) {
         if (user.isAdmin()) {
             for (Vehicle vehicle : new Vehicle().getAllVehicles()) {
-                System.out.println(vehicle.toStringSaveFileFormat());
+                System.out.println(vehicle.toStringDisplayFormat());
             }
             return;
         }
 
         for (Vehicle vehicle : user.getManagingPort().getVehicles()) {
-            System.out.println(vehicle.toStringSaveFileFormat());
+            System.out.println(vehicle.toStringDisplayFormat());
         }
     }
 
@@ -596,6 +596,25 @@ public class PortManagementSystem {
         System.out.println(user);
     }
 
+    private static void displayTripDetails(User user) {
+        if (user.isAdmin()) {
+            for (TripDetails tripDetails : new TripDetails().getAllTripDetails()) {
+                System.out.println(tripDetails.toStringDisplayFormat());
+            }
+            return;
+        }
+
+        System.out.println("Ongoing trips: ");
+        for (TripDetails tripDetails : user.getManagingPort().getOngoingTraffics()) {
+            System.out.println(tripDetails.toStringDisplayFormat());
+        }
+
+        System.out.println("Past trips: ");
+        for (TripDetails tripDetails : user.getManagingPort().getPastTraffics()) {
+            System.out.println(tripDetails.toStringDisplayFormat());
+        }
+    }
+
     private static void displayMenuLayer0(User user) {
         CustomUtils.breakLn(5);
 
@@ -606,7 +625,7 @@ public class PortManagementSystem {
                 [2] - List all Containers
                 [3] - List all Vehicles
                 [4] - List all Users
-                [5] - View Statistics
+                [5] - List all TripDetails
                 [0] - Exit/Logout""");
             return;
         }
@@ -617,7 +636,7 @@ public class PortManagementSystem {
                 [2] - List all Port's Containers
                 [3] - List all Port's Vehicles
                 [4] - View current User information
-                [4] - View Statistics
+                [5] - List all Port's TripDetails
                 [0] - Exit/Logout""");
     }
 
@@ -627,6 +646,11 @@ public class PortManagementSystem {
         switch (string) {
             case "1" -> {
                 displayPort(user);
+
+                if (user.isAdmin()) {
+                    System.out.println("View ");
+                }
+
                 portCRUD(user);
             }
 
@@ -642,6 +666,10 @@ public class PortManagementSystem {
 
             case "4" -> {
                 displayUser(user);
+            }
+
+            case "5" -> {
+                displayTripDetails(user);
             }
 
             default -> System.out.println("Error! Undefined option.");
