@@ -40,7 +40,13 @@ public class User {
         users.add(this);
         return this;
     }
+    public User findUserByName(String name) {
+        for (User user : users) {
+            if (name.equals(user.getUsername())) return user;
+        }
 
+        return null;
+    }
     public ArrayList<User> getAllUsers() {
         return users;
     }
