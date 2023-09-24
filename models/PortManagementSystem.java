@@ -21,7 +21,7 @@ public class PortManagementSystem {
 
         double Latitude = 0.0;
 
-        if (CustomUtils.isDouble(latitude)) {
+        if (CustomUtils.isDouble(latitude)){
             Latitude = Double.parseDouble(latitude);
         } else {
             System.out.println("Invalid input");
@@ -32,7 +32,7 @@ public class PortManagementSystem {
 
         double Longitude = 0.0;
 
-        if (CustomUtils.isDouble(longitude)) {
+        if (CustomUtils.isDouble(longitude)){
             Longitude = Double.parseDouble(longitude);
         } else {
             System.out.println("Invalid input");
@@ -43,7 +43,7 @@ public class PortManagementSystem {
 
         double MaxCap = 0.0;
 
-        if (CustomUtils.isDouble(maxCap)) {
+        if (CustomUtils.isDouble(maxCap)){
             MaxCap = Double.parseDouble(maxCap);
         } else {
             System.out.println("Invalid input");
@@ -76,21 +76,21 @@ public class PortManagementSystem {
 
         System.out.println("Enter latitude: ");
         String latitude = scanner.nextLine();
-        if (!CustomUtils.isDouble(latitude)) {
+        if (!CustomUtils.isDouble(latitude)){
             System.out.println("Invalid input, please try again...");
             return;
         }
 
         System.out.println("Enter longitude: ");
         String longitude = scanner.nextLine();
-        if (!CustomUtils.isDouble(longitude)) {
+        if (!CustomUtils.isDouble(longitude)){
             System.out.println("Invalid input, please try again...");
             return;
         }
 
         System.out.println("Enter max capacity: ");
         String maxCap = scanner.nextLine();
-        if (!CustomUtils.isDouble(maxCap)) {
+        if (!CustomUtils.isDouble(maxCap)){
             System.out.println("Invalid input, please try again...");
             return;
         }
@@ -152,8 +152,7 @@ public class PortManagementSystem {
             String input = scanner.nextLine();
 
             switch (input) {
-                case "0" -> {
-                }
+                case "0" -> {}
 
                 case "1" -> portCreate();
 
@@ -209,7 +208,7 @@ public class PortManagementSystem {
         System.out.println("Enter max carry capacity: ");
         String maxCarryCap = scanner.next();
 
-        if (CustomUtils.isDouble(maxCarryCap)) {
+        if (CustomUtils.isDouble(maxCarryCap)){
             System.out.println("Invalid input, please try again...");
             return;
         }
@@ -250,7 +249,7 @@ public class PortManagementSystem {
 
         System.out.println("Enter max fuel: ");
         String maxFuel = scanner.next();
-        if (!CustomUtils.isDouble(maxFuel)) {
+        if (!CustomUtils.isDouble(maxFuel)){
             System.out.println("Invalid input, please try again...");
             return;
         }
@@ -262,7 +261,7 @@ public class PortManagementSystem {
 
         System.out.println("Enter max carry capacity: ");
         String maxCarryCap = scanner.next();
-        if (!CustomUtils.isDouble(maxCarryCap)) {
+        if (!CustomUtils.isDouble(maxCarryCap)){
             System.out.println("Invalid input, please try again...");
             return;
         }
@@ -325,17 +324,16 @@ public class PortManagementSystem {
 
     private static void vehicleCRUD(User user) {
         System.out.println("""
-                [1] - Create
-                [2] - Update
-                [3] - Delete
-                [0] - Quit""");
+                        [1] - Create
+                        [2] - Update
+                        [3] - Delete
+                        [0] - Quit""");
 
         System.out.println("Enter option: ");
         String input = scanner.nextLine();
 
         switch (input) {
-            case "0" -> {
-            }
+            case "0" -> {}
 
             case "1" -> vehicleCreate(user);
 
@@ -354,6 +352,8 @@ public class PortManagementSystem {
 
             default -> System.out.println("Error! Invalid input option.");
         }
+
+        fileIO.saveVehicles();
     }
 
 
@@ -383,19 +383,19 @@ public class PortManagementSystem {
 
         System.out.println("Enter the weight: ");
         String weight = scanner.nextLine();
-        if (!CustomUtils.isDouble(weight)) {
+        if (!CustomUtils.isDouble(weight)){
             System.out.println("Invalid input, please try again...");
             return;
         }
 
-        if (user.isAdmin()) {
+        if (user.isAdmin()){
             displayPort(user);
 
             System.out.println("Enter port ID: ");
             String portId = scanner.next();
 
             Port port = new Port().findPortById(portId);
-            if (port == null) {
+            if (port == null){
                 System.out.println("Invalid input, please try again...");
                 return;
             }
@@ -432,7 +432,7 @@ public class PortManagementSystem {
         System.out.println("Enter the weight: ");
         String weight = scanner.nextLine();
 
-        if (!CustomUtils.isDouble(weight)) {
+        if (!CustomUtils.isDouble(weight)){
             System.out.println("Invalid input, please try again...");
             return;
         }
@@ -506,8 +506,7 @@ public class PortManagementSystem {
         String input = scanner.nextLine();
 
         switch (input) {
-            case "0" -> {
-            }
+            case "0" -> {}
 
             case "1" -> containerCreate(user);
 
@@ -525,6 +524,9 @@ public class PortManagementSystem {
 
             default -> System.out.println("Error! Invalid input option.");
         }
+
+        fileIO.saveContainers();
+
     }
 
     private static void userCRUD(User user) {
@@ -691,6 +693,37 @@ public class PortManagementSystem {
         }
     }
 
+    private static void loadContainer(User user) {
+        for (Vehicle v : user.getManagingPort().getVehicles()) {
+            System.out.println(v.toStringDisplayFormat());
+        }
+
+        System.out.println("Enter a vehicleId: ");
+        String vehicleId = scanner.nextLine();
+        Vehicle vehicle = user.getManagingPort().findVehicleInPortById(vehicleId);
+        if (vehicle == null) {
+            System.out.println("Vehicle not found with ID: " + vehicleId);
+            return;
+        }
+
+        for (Container c : user.getManagingPort().getContainers()) {
+            System.out.println(c.toStringDisplayFormat());
+        }
+
+        System.out.println("Enter a containerId: ");
+        String containerId = scanner.nextLine();
+        Container container = user.getManagingPort().findContainerInPortById(containerId);
+        if (container == null) {
+            System.out.println("Container not found with ID: " + vehicleId);
+            return;
+        }
+
+        user.getManagingPort().loadContainerToVehicle(container, vehicle);
+
+        fileIO.saveVehicles();
+        fileIO.savePorts();
+    }
+
     private static void displayUser(User user) {
         if (user.isAdmin()) {
             for (User user_ : new User().getAllUsers()) {
@@ -721,6 +754,39 @@ public class PortManagementSystem {
         }
     }
 
+    private static void startTrips(User user) {
+        CustomUtils.breakLn(3);
+
+        for (Port p : new Port().getAllPorts()) {
+            System.out.println(p.toStringDisplayFormat());
+        }
+
+        System.out.println("Enter a portId: ");
+        String portId = scanner.nextLine();
+        Port port = new Port().findPortById(portId);
+        if (port == null) {
+            System.out.println("Port not found with ID: " + portId);
+            return;
+        }
+
+        for (Vehicle v : user.getManagingPort().getVehicles()) {
+            System.out.println(v.toStringDisplayFormat());
+        }
+
+        System.out.println("Enter a vehicleId: ");
+        String vehicleId = scanner.nextLine();
+        Vehicle vehicle = user.getManagingPort().findVehicleInPortById(vehicleId);
+        if (vehicle == null) {
+            System.out.println("Vehicle not found with ID: " + vehicleId);
+            return;
+        }
+
+        user.getManagingPort().startTrip(vehicle, port);
+
+        fileIO.saveTripDetails();
+        fileIO.savePorts();
+    }
+
     private static void displayMenuLayer0(User user) {
         CustomUtils.breakLn(5);
 
@@ -743,6 +809,8 @@ public class PortManagementSystem {
                 [3] - List all Port's Vehicles
                 [4] - View current User information
                 [5] - List all Port's TripDetails
+                [6] - Load container to vehicle
+                [7] - Start trips to other ports
                 [0] - Exit/Logout""");
     }
 
@@ -772,6 +840,23 @@ public class PortManagementSystem {
 
             case "5" -> {
                 displayTripDetails(user);
+
+            }
+
+            case "6" -> {
+                if (user.isAdmin()) {
+                    System.out.println("Error! Undefined option.");
+                } else {
+                    loadContainer(user);
+                }
+            }
+
+            case "7" -> {
+                if (user.isAdmin()) {
+                    System.out.println("Error! Undefined option.");
+                } else {
+                    startTrips(user);
+                }
             }
 
             default -> System.out.println("Error! Undefined option.");
